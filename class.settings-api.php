@@ -24,6 +24,25 @@ class WeDevs_Settings_API {
     private $settings_fields = array();
 
     /**
+     * Singleton instance
+     * 
+     * @var object
+     */
+    private static $_instance;
+
+    public function __construct() {
+
+    }
+
+    public static function getInstance() {
+        if ( !self::$_instance ) {
+            self::$_instance = new WeDevs_Settings_API();
+        }
+
+        return self::$_instance;
+    }
+
+    /**
      * Set settings sections
      *
      * @param array $sections setting sections array
