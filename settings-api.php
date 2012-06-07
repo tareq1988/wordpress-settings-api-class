@@ -2,10 +2,11 @@
 
 /**
  * Plugin Name: WordPress Settings API
- * Plugin URI: http://tareq.weDevs.com
+ * Plugin URI: http://tareq.wedevs.com/2012/06/wordpress-settings-api-php-class/
  * Description: WordPress Settings API testing
  * Author: Tareq Hasan
  * Author URI: http://tareq.weDevs.com
+ * Version: 0.1
  */
 require_once dirname( __FILE__ ) . '/class.settings-api.php';
 
@@ -19,7 +20,7 @@ class WeDevs_Settings_API_Test {
     private $settings_api;
 
     function __construct() {
-        $this->settings_api = new WeDevs_Settings_API();
+        $this->settings_api = WeDevs_Settings_API::getInstance();
 
         add_action( 'admin_init', array($this, 'admin_init') );
         add_action( 'admin_menu', array($this, 'admin_menu') );
@@ -40,7 +41,7 @@ class WeDevs_Settings_API_Test {
     }
 
     function get_settings_sections() {
-        $sections = apply_filters( 'wpuf_settings_sections', array(
+        $sections = array(
             array(
                 'id' => 'wpuf_labels',
                 'title' => __( 'Labels', 'wpuf' ),
@@ -56,7 +57,7 @@ class WeDevs_Settings_API_Test {
                 'title' => __( 'Dashboard', 'wpuf' ),
                 'callback' => 'dashboard'
             )
-                ) );
+        );
 
         return $sections;
     }
@@ -91,14 +92,14 @@ class WeDevs_Settings_API_Test {
                 ),
                 array(
                     'name' => 'test_mode',
-                    'label' => __( 'Test Mode', 'edd' ),
-                    'desc' => __( 'While in test mode no live transactions are processed. To fully use test mode, you must have a sandbox (test) account for the payment gateway you are testing.', 'edd' ),
+                    'label' => __( 'Test Mode', 'wpuf' ),
+                    'desc' => __( 'While in test mode no live transactions are processed. To fully use test mode, you must have a sandbox (test) account for the payment gateway you are testing.', 'wpuf' ),
                     'type' => 'checkbox'
                 ),
                 array(
                     'name' => 'accepted_cards',
-                    'label' => __( 'Accepted Payment Method Icons', 'edd' ),
-                    'desc' => __( 'Display icons for the selected payment methods', 'edd' ) . '<br/>' . __( 'You will also need to configure your gateway settings if you are accepting credit cards', 'edd' ),
+                    'label' => __( 'Accepted Payment Method Icons', 'wpuf' ),
+                    'desc' => __( 'Display icons for the selected payment methods', 'edd' ) . '<br/>' . __( 'You will also need to configure your gateway settings if you are accepting credit cards', 'wpuf' ),
                     'type' => 'multicheck',
                     'options' => array(
                         'mastercard' => 'Mastercard',
@@ -135,15 +136,14 @@ class WeDevs_Settings_API_Test {
             'wpuf_dashboard' => array(
                 array(
                     'name' => 'list_post_range',
-                    'label' => 'How many posts in a page?',
-                    'desc' => 'Configure how many posts will be shown in one page',
-                    'type' => 'text',
-                    'size' => 2
+                    'label' => __( 'How many posts in a page?', 'wpuf' ),
+                    'desc' => __( 'Configure how many posts will be shown in one page', 'wpuf' ),
+                    'type' => 'text'
                 ),
                 array(
                     'name' => 'list_user_info',
-                    'label' => 'Show user bio',
-                    'desc' => 'Users Biographical info will be shown on the dashboard',
+                    'label' => __( 'Show user bio', 'wpuf' ),
+                    'desc' => __( 'Users Biographical info will be shown on the dashboard', 'wpuf' ),
                     'type' => 'select',
                     'options' => array(
                         'yes' => 'Yes',
@@ -152,8 +152,8 @@ class WeDevs_Settings_API_Test {
                 ),
                 array(
                     'name' => 'list_contact_info',
-                    'label' => 'Show User contact info',
-                    'desc' => 'Contact information from users profile will be shown under author bio. So Author Bio must be <b>enabled</b>',
+                    'label' => __( 'Show User contact info', 'wpuf' ),
+                    'desc' => __( 'Contact information from users profile will be shown under author bio. So Author Bio must be <b>enabled</b>', 'wpuf' ),
                     'type' => 'select',
                     'options' => array(
                         'yes' => 'Yes',
@@ -162,8 +162,8 @@ class WeDevs_Settings_API_Test {
                 ),
                 array(
                     'name' => 'list_post_count',
-                    'label' => 'Show post count',
-                    'desc' => 'Show how many posts are created by the user',
+                    'label' => __( 'Show post count', 'wpuf' ),
+                    'desc' => __( 'Show how many posts are created by the user', 'wpuf' ),
                     'type' => 'select',
                     'options' => array(
                         'yes' => 'Yes',
@@ -172,16 +172,14 @@ class WeDevs_Settings_API_Test {
                 ),
                 array(
                     'name' => 'list_user_cs',
-                    'label' => 'Show users custom fields',
-                    'desc' => 'If you want to show users other custom fields, list the custom fields names by separating with comma',
-                    'type' => 'textarea',
-                    'rows' => 3,
-                    'cols' => 40
+                    'label' => __( 'Show users custom fields' ),
+                    'desc' => __( 'If you want to show users other custom fields, list the custom fields names by separating with comma' ),
+                    'type' => 'textarea'
                 ),
                 array(
                     'name' => 'dashboard_page',
-                    'label' => 'Dashboard Page',
-                    'desc' => 'Which Page to use as dashboard',
+                    'label' => __( 'Dashboard Page', 'wpuf' ),
+                    'desc' => __( 'Which Page to use as dashboard', 'wpuf' ),
                     'type' => 'select',
                     'options' => $this->get_pages()
                 ),
