@@ -37,28 +37,24 @@ class WeDevs_Settings_API_Test {
     }
 
     function admin_menu() {
-        $page = add_options_page( 'Settings API', 'Settings API', 'delete_posts', 'settings_api_test', array($this, 'plugin_page') );
+        add_options_page( 'Settings API', 'Settings API', 'delete_posts', 'settings_api_test', array($this, 'plugin_page') );
     }
 
     function get_settings_sections() {
         $sections = array(
             array(
-                'id' => 'wpuf_labels',
-                'title' => __( 'Labels', 'wpuf' ),
-                'callback' => 'labels'
+                'id' => 'wedevs_basics',
+                'title' => __( 'Basic Settings', 'wedevs' )
             ),
             array(
-                'id' => 'wpuf_posting',
-                'title' => __( 'Frontend Posting', 'wpuf' ),
-                'callback' => 'posting'
+                'id' => 'wedevs_advanced',
+                'title' => __( 'Advanced Settings', 'wedevs' )
             ),
             array(
-                'id' => 'wpuf_dashboard',
-                'title' => __( 'Dashboard', 'wpuf' ),
-                'callback' => 'dashboard'
+                'id' => 'wedevs_others',
+                'title' => __( 'Other Settings', 'wpuf' )
             )
         );
-
         return $sections;
     }
 
@@ -69,121 +65,168 @@ class WeDevs_Settings_API_Test {
      */
     function get_settings_fields() {
         $settings_fields = array(
-            'wpuf_labels' => array(
+            'wedevs_basics' => array(
                 array(
-                    'name' => 'title_label',
-                    'label' => __( 'Post title label', 'wpuf' ),
-                    'desc' => __( 'Label for post title', 'wpuf' ),
+                    'name' => 'text',
+                    'label' => __( 'Text Input', 'wedevs' ),
+                    'desc' => __( 'Text input description', 'wedevs' ),
                     'type' => 'text',
                     'default' => 'Title'
                 ),
                 array(
-                    'name' => 'title_help',
-                    'label' => __( 'Post title help text', 'wpuf' ),
-                    'desc' => __( 'Description for post title. Will be shown as help text, leave empty if you don\'t want anything', 'wpuf' ),
-                    'type' => 'text'
-                ),
-                array(
-                    'name' => 'cat_label',
-                    'label' => __( 'Post category label', 'wpuf' ),
-                    'desc' => __( 'Label for post category', 'wpuf' ),
-                    'type' => 'text',
-                    'default' => 'Category'
-                ),
-                array(
-                    'name' => 'test_mode',
-                    'label' => __( 'Test Mode', 'wpuf' ),
-                    'desc' => __( 'While in test mode no live transactions are processed. To fully use test mode, you must have a sandbox (test) account for the payment gateway you are testing.', 'wpuf' ),
-                    'type' => 'checkbox'
-                ),
-                array(
-                    'name' => 'accepted_cards',
-                    'label' => __( 'Accepted Payment Method Icons', 'wpuf' ),
-                    'desc' => __( 'Display icons for the selected payment methods', 'edd' ) . '<br/>' . __( 'You will also need to configure your gateway settings if you are accepting credit cards', 'wpuf' ),
-                    'type' => 'multicheck',
-                    'options' => array(
-                        'mastercard' => 'Mastercard',
-                        'visa' => 'Visa',
-                        'american_express' => 'American Express',
-                        'discover' => 'Discover',
-                        'paypal' => 'PayPal'
-                    )
-                ),
-            ),
-            'wpuf_posting' => array(
-                array(
-                    'name' => 'post_status',
-                    'label' => __( 'Post Status', 'wpuf' ),
-                    'desc' => __( 'Default post status after a user submits a post', 'wpuf' ),
-                    'type' => 'select',
-                    'options' => array(
-                        'publish' => __( 'Publish' ),
-                        'draft' => __( 'Draft', 'wpuf' ),
-                        'pending' => __( 'Pending', 'wpuf' )
-                    )
-                ),
-                array(
-                    'name' => 'post_author',
-                    'label' => __( 'Post Author', 'wpuf' ),
-                    'desc' => __( 'The poster will be the post author by default. If you want to set the post author as an another user, you may select <b>MAP TO OTHER USER</b>', 'wpuf' ),
-                    'type' => 'select',
-                    'options' => array(
-                        'original' => __( 'Original Author', 'wpuf' ),
-                        'to_other' => __( 'Map to other user', 'wpuf' )
-                    )
-                ),
-            ),
-            'wpuf_dashboard' => array(
-                array(
-                    'name' => 'list_post_range',
-                    'label' => __( 'How many posts in a page?', 'wpuf' ),
-                    'desc' => __( 'Configure how many posts will be shown in one page', 'wpuf' ),
-                    'type' => 'text'
-                ),
-                array(
-                    'name' => 'list_user_info',
-                    'label' => __( 'Show user bio', 'wpuf' ),
-                    'desc' => __( 'Users Biographical info will be shown on the dashboard', 'wpuf' ),
-                    'type' => 'select',
-                    'options' => array(
-                        'yes' => 'Yes',
-                        'no' => 'No'
-                    )
-                ),
-                array(
-                    'name' => 'list_contact_info',
-                    'label' => __( 'Show User contact info', 'wpuf' ),
-                    'desc' => __( 'Contact information from users profile will be shown under author bio. So Author Bio must be <b>enabled</b>', 'wpuf' ),
-                    'type' => 'select',
-                    'options' => array(
-                        'yes' => 'Yes',
-                        'no' => 'No'
-                    )
-                ),
-                array(
-                    'name' => 'list_post_count',
-                    'label' => __( 'Show post count', 'wpuf' ),
-                    'desc' => __( 'Show how many posts are created by the user', 'wpuf' ),
-                    'type' => 'select',
-                    'options' => array(
-                        'yes' => 'Yes',
-                        'no' => 'No'
-                    )
-                ),
-                array(
-                    'name' => 'list_user_cs',
-                    'label' => __( 'Show users custom fields' ),
-                    'desc' => __( 'If you want to show users other custom fields, list the custom fields names by separating with comma' ),
+                    'name' => 'textarea',
+                    'label' => __( 'Textarea Input', 'wedevs' ),
+                    'desc' => __( 'Textarea description', 'wedevs' ),
                     'type' => 'textarea'
                 ),
                 array(
-                    'name' => 'dashboard_page',
-                    'label' => __( 'Dashboard Page', 'wpuf' ),
-                    'desc' => __( 'Which Page to use as dashboard', 'wpuf' ),
-                    'type' => 'select',
-                    'options' => $this->get_pages()
+                    'name' => 'checkbox',
+                    'label' => __( 'Checkbox', 'wedevs' ),
+                    'desc' => __( 'Checkbox Label', 'wedevs' ),
+                    'type' => 'checkbox'
                 ),
+                array(
+                    'name' => 'radio',
+                    'label' => __( 'Radio Button', 'wedevs' ),
+                    'desc' => __( 'A radio button', 'wedevs' ),
+                    'type' => 'radio',
+                    'options' => array(
+                        'yes' => 'Yes',
+                        'no' => 'No'
+                    )
+                ),
+                array(
+                    'name' => 'multicheck',
+                    'label' => __( 'Multile checkbox', 'wedevs' ),
+                    'desc' => __( 'Multi checkbox description', 'wedevs' ),
+                    'type' => 'multicheck',
+                    'options' => array(
+                        'one' => 'One',
+                        'two' => 'Two',
+                        'three' => 'Three',
+                        'four' => 'Four'
+                    )
+                ),
+                array(
+                    'name' => 'selectbox',
+                    'label' => __( 'A Dropdown', 'wedevs' ),
+                    'desc' => __( 'Dropdown description', 'wedevs' ),
+                    'type' => 'select',
+                    'default' => 'no',
+                    'options' => array(
+                        'yes' => 'Yes',
+                        'no' => 'No'
+                    )
+                )
             ),
+            'wedevs_advanced' => array(
+                array(
+                    'name' => 'text',
+                    'label' => __( 'Text Input', 'wedevs' ),
+                    'desc' => __( 'Text input description', 'wedevs' ),
+                    'type' => 'text',
+                    'default' => 'Title'
+                ),
+                array(
+                    'name' => 'textarea',
+                    'label' => __( 'Textarea Input', 'wedevs' ),
+                    'desc' => __( 'Textarea description', 'wedevs' ),
+                    'type' => 'textarea'
+                ),
+                array(
+                    'name' => 'checkbox',
+                    'label' => __( 'Checkbox', 'wedevs' ),
+                    'desc' => __( 'Checkbox Label', 'wedevs' ),
+                    'type' => 'checkbox'
+                ),
+                array(
+                    'name' => 'radio',
+                    'label' => __( 'Radio Button', 'wedevs' ),
+                    'desc' => __( 'A radio button', 'wedevs' ),
+                    'type' => 'radio',
+                    'default' => 'no',
+                    'options' => array(
+                        'yes' => 'Yes',
+                        'no' => 'No'
+                    )
+                ),
+                array(
+                    'name' => 'multicheck',
+                    'label' => __( 'Multile checkbox', 'wedevs' ),
+                    'desc' => __( 'Multi checkbox description', 'wedevs' ),
+                    'type' => 'multicheck',
+                    'default' => array('one' => 'one', 'four' => 'four'),
+                    'options' => array(
+                        'one' => 'One',
+                        'two' => 'Two',
+                        'three' => 'Three',
+                        'four' => 'Four'
+                    )
+                ),
+                array(
+                    'name' => 'selectbox',
+                    'label' => __( 'A Dropdown', 'wedevs' ),
+                    'desc' => __( 'Dropdown description', 'wedevs' ),
+                    'type' => 'select',
+                    'options' => array(
+                        'yes' => 'Yes',
+                        'no' => 'No'
+                    )
+                )
+            ),
+            'wedevs_others' => array(
+                array(
+                    'name' => 'text',
+                    'label' => __( 'Text Input', 'wedevs' ),
+                    'desc' => __( 'Text input description', 'wedevs' ),
+                    'type' => 'text',
+                    'default' => 'Title'
+                ),
+                array(
+                    'name' => 'textarea',
+                    'label' => __( 'Textarea Input', 'wedevs' ),
+                    'desc' => __( 'Textarea description', 'wedevs' ),
+                    'type' => 'textarea'
+                ),
+                array(
+                    'name' => 'checkbox',
+                    'label' => __( 'Checkbox', 'wedevs' ),
+                    'desc' => __( 'Checkbox Label', 'wedevs' ),
+                    'type' => 'checkbox'
+                ),
+                array(
+                    'name' => 'radio',
+                    'label' => __( 'Radio Button', 'wedevs' ),
+                    'desc' => __( 'A radio button', 'wedevs' ),
+                    'type' => 'radio',
+                    'options' => array(
+                        'yes' => 'Yes',
+                        'no' => 'No'
+                    )
+                ),
+                array(
+                    'name' => 'multicheck',
+                    'label' => __( 'Multile checkbox', 'wedevs' ),
+                    'desc' => __( 'Multi checkbox description', 'wedevs' ),
+                    'type' => 'multicheck',
+                    'options' => array(
+                        'one' => 'One',
+                        'two' => 'Two',
+                        'three' => 'Three',
+                        'four' => 'Four'
+                    )
+                ),
+                array(
+                    'name' => 'selectbox',
+                    'label' => __( 'A Dropdown', 'wedevs' ),
+                    'desc' => __( 'Dropdown description', 'wedevs' ),
+                    'type' => 'select',
+                    'options' => array(
+                        'yes' => 'Yes',
+                        'no' => 'No'
+                    )
+                )
+            )
         );
 
         return $settings_fields;
@@ -219,4 +262,3 @@ class WeDevs_Settings_API_Test {
 }
 
 $settings = new WeDevs_Settings_API_Test();
-
