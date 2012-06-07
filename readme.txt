@@ -28,10 +28,6 @@ A nice tutorial is presented can be found [here](http://tareq.wedevs.com/2012/06
 
 == Installation ==
 
-This section describes how to install the plugin and get it working.
-
-e.g.
-
 1. Upload and install the plugin
 1. You'll have a new options page under the 'Settings' area
 
@@ -39,7 +35,7 @@ e.g.
 
 = What this plugin for? =
 
-It's mainly a plugin that demonastrates the Settings API PHP class
+It's mainly a plugin that demonstrates the Settings API PHP class
 
 = Whats the facility? =
 
