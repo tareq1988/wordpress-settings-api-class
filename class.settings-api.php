@@ -107,7 +107,7 @@ class WeDevs_Settings_API {
 
     /**
      * Register a single settings field
-     * 
+     *
      * @param string $section section name
      * @param array $field section field option
      */
@@ -240,6 +240,15 @@ class WeDevs_Settings_API {
         $html .= sprintf( '<br><span class="description"> %s</span>', $args['desc'] );
 
         echo $html;
+    }
+
+    /**
+     * Displays a textarea for a settings field
+     *
+     * @param array $args settings field args
+     */
+    function callback_html( $args ) {
+        echo $args['desc'];
     }
 
     /**
