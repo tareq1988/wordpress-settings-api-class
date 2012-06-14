@@ -52,12 +52,33 @@ class WeDevs_Settings_API {
     }
 
     /**
+     * Add a single section
+     *
+     * @param array $section
+     */
+    function add_section( $section ) {
+        $this->settings_sections[] = $section;
+    }
+
+    /**
      * Set settings fields
      *
      * @param array $fields settings fields array
      */
     function set_fields( $fields ) {
         $this->settings_fields = $fields;
+    }
+
+    function add_field( $section, $field ) {
+        $defaults = array(
+            'name' => '',
+            'label' => '',
+            'desc' => '',
+            'type' => 'text'
+        );
+
+        $arg = wp_parse_args( $field, $defaults );
+        $this->settings_fields[$section][] = $arg;
     }
 
     /**
