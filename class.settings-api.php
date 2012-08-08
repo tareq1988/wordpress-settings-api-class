@@ -229,6 +229,29 @@ class WeDevs_Settings_API {
     }
 
     /**
+     * Displays a rich text textarea for a settings field
+     *
+     * @param array $args settings field args
+     */
+    function callback_wysiwyg( $args ) {
+
+        $value = wpautop( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
+        $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : '500px';
+
+        echo '<div style="width: ' . $size . ';">';
+
+        wp_editor( 
+            $value, 
+            $args[ 'section' ] . '[' . $args[ 'id' ] . ']', 
+            array( 'teeny' => true, 'textarea_rows' => 10 )
+        );
+
+        echo '</div>';
+
+        echo sprintf( '<br><span class="description"> %s</span>', $args['desc'] );
+    }
+
+    /**
      * Get the value of a settings field
      *
      * @param string $option settings field name
