@@ -103,16 +103,20 @@ class WeDevs_Settings_API {
         //register settings fields
         foreach ($this->settings_fields as $section => $field) {
             foreach ($field as $option) {
+
+                $type = isset( $option['type'] ) ? $option['type'] : 'text';
+
                 $args = array(
                     'id' => $option['name'],
-                    'desc' => $option['desc'],
+                    'desc' => isset( $option['desc'] ) ? $option['desc'] : '',
                     'name' => $option['label'],
                     'section' => $section,
                     'size' => isset( $option['size'] ) ? $option['size'] : null,
                     'options' => isset( $option['options'] ) ? $option['options'] : '',
-                    'std' => isset( $option['default'] ) ? $option['default'] : ''
+                    'std' => isset( $option['default'] ) ? $option['default'] : '',
+                    'class' => 'regular-text'
                 );
-                add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array($this, 'callback_' . $option['type']), $section, $section, $args );
+                add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array($this, 'callback_' . $type), $section, $section, $args );
             }
         }
 
@@ -249,10 +253,8 @@ class WeDevs_Settings_API {
 
         echo '<div style="width: ' . $size . ';">';
 
-        wp_editor( 
-            $value, 
-            $args[ 'section' ] . '[' . $args[ 'id' ] . ']', 
-            array( 'teeny' => true, 'textarea_rows' => 10 )
+        wp_editor(
+                $value, $args['section'] . '[' . $args['id'] . ']', array('teeny' => true, 'textarea_rows' => 10)
         );
 
         echo '</div>';
