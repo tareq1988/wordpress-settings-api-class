@@ -70,6 +70,14 @@ class WeDevs_Settings_API {
     }
 
     function add_field( $section, $field ) {
+        $defaults = array(
+            'name' => '',
+            'label' => '',
+            'desc' => '',
+            'type' => 'text'
+        );
+
+        $arg = wp_parse_args( $field, $defaults );
         $this->settings_fields[$section][] = $arg;
     }
 
@@ -95,7 +103,16 @@ class WeDevs_Settings_API {
         //register settings fields
         foreach ($this->settings_fields as $section => $field) {
             foreach ($field as $option) {
-                $this->init_field( $section, $option );
+                $args = array(
+                    'id' => $option['name'],
+                    'desc' => $option['desc'],
+                    'name' => $option['label'],
+                    'section' => $section,
+                    'size' => isset( $option['size'] ) ? $option['size'] : null,
+                    'options' => isset( $option['options'] ) ? $option['options'] : '',
+                    'std' => isset( $option['default'] ) ? $option['default'] : ''
+                );
+                add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array($this, 'callback_' . $option['type']), $section, $section, $args );
             }
         }
 
@@ -103,37 +120,6 @@ class WeDevs_Settings_API {
         foreach ($this->settings_sections as $section) {
             register_setting( $section['id'], $section['id'] );
         }
-    }
-
-    /**
-     * Register a single settings field
-     *
-     * @param string $section section name
-     * @param array $field section field option
-     */
-    function init_field( $section, $field ) {
-        $defaults = array(
-            'name' => '',
-            'label' => '',
-            'desc' => '',
-            'type' => 'text',
-            'default' => '',
-            'options' => '',
-            'size' => ''
-        );
-
-        $option = wp_parse_args( $field, $defaults );
-
-        $args = array(
-            'id' => $option['name'],
-            'desc' => $option['desc'],
-            'name' => $option['label'],
-            'section' => $section,
-            'size' => $option['size'],
-            'options' => $option['options'],
-            'std' => $option['default']
-        );
-        add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array($this, 'callback_' . $option['type']), $section, $section, $args );
     }
 
     /**
@@ -242,13 +228,36 @@ class WeDevs_Settings_API {
         echo $html;
     }
 
-    /**
+ /**
      * Displays a textarea for a settings field
      *
      * @param array $args settings field args
      */
     function callback_html( $args ) {
         echo $args['desc'];
+    }
+
+    /**
+     * Displays a rich text textarea for a settings field
+     *
+     * @param array $args settings field args
+     */
+    function callback_wysiwyg( $args ) {
+
+        $value = wpautop( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
+        $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : '500px';
+
+        echo '<div style="width: ' . $size . ';">';
+
+        wp_editor( 
+            $value, 
+            $args[ 'section' ] . '[' . $args[ 'id' ] . ']', 
+            array( 'teeny' => true, 'textarea_rows' => 10 )
+        );
+
+        echo '</div>';
+
+        echo sprintf( '<br><span class="description"> %s</span>', $args['desc'] );
     }
 
     /**
