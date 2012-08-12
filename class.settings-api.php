@@ -228,7 +228,7 @@ class WeDevs_Settings_API {
         echo $html;
     }
 
- /**
+    /**
      * Displays a textarea for a settings field
      *
      * @param array $args settings field args
