@@ -108,7 +108,6 @@ class WeDevs_Settings_API {
 
                 $args = array(
                     'id' => $option['name'],
-                    'class' => $option['class'] ? ' '.$option['class'] : '',
                     'desc' => isset( $option['desc'] ) ? $option['desc'] : '',
                     'name' => $option['label'],
                     'section' => $section,
@@ -137,7 +136,7 @@ class WeDevs_Settings_API {
         $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
         $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
 
-        $html = sprintf( '<input type="text" class="%1$s-text%5$s" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value , $args['class'] );
+        $html = sprintf( '<input type="text" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
         $html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
 
         echo $html;
@@ -152,7 +151,7 @@ class WeDevs_Settings_API {
 
         $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
 
-        $html = sprintf( '<input type="checkbox" class="checkbox%5$s" id="%1$s[%2$s]" name="%1$s[%2$s]" value="on"%4$s />', $args['section'], $args['id'], $value, checked( $value, 'on', false ) , $args['class'] );
+        $html = sprintf( '<input type="checkbox" class="checkbox" id="%1$s[%2$s]" name="%1$s[%2$s]" value="on"%4$s />', $args['section'], $args['id'], $value, checked( $value, 'on', false ) );
         $html .= sprintf( '<label for="%1$s[%2$s]"> %3$s</label>', $args['section'], $args['id'], $args['desc'] );
 
         echo $html;
@@ -170,7 +169,7 @@ class WeDevs_Settings_API {
         $html = '';
         foreach ($args['options'] as $key => $label) {
             $checked = isset( $value[$key] ) ? $value[$key] : '0';
-            $html .= sprintf( '<input type="checkbox" class="checkbox%5$s" id="%1$s[%2$s][%3$s]" name="%1$s[%2$s][%3$s]" value="%3$s"%4$s />', $args['section'], $args['id'], $key, checked( $checked, $key, false ) , $args['class'] );
+            $html .= sprintf( '<input type="checkbox" class="checkbox" id="%1$s[%2$s][%3$s]" name="%1$s[%2$s][%3$s]" value="%3$s"%4$s />', $args['section'], $args['id'], $key, checked( $checked, $key, false ) );
             $html .= sprintf( '<label for="%1$s[%2$s][%4$s]"> %3$s</label><br>', $args['section'], $args['id'], $label, $key );
         }
         $html .= sprintf( '<span class="description"> %s</label>', $args['desc'] );
@@ -189,7 +188,7 @@ class WeDevs_Settings_API {
 
         $html = '';
         foreach ($args['options'] as $key => $label) {
-            $html .= sprintf( '<input type="radio" class="radio%5$s" id="%1$s[%2$s][%3$s]" name="%1$s[%2$s]" value="%3$s"%4$s />', $args['section'], $args['id'], $key, checked( $value, $key, false ) , $args['class'] );
+            $html .= sprintf( '<input type="radio" class="radio" id="%1$s[%2$s][%3$s]" name="%1$s[%2$s]" value="%3$s"%4$s />', $args['section'], $args['id'], $key, checked( $value, $key, false ) );
             $html .= sprintf( '<label for="%1$s[%2$s][%4$s]"> %3$s</label><br>', $args['section'], $args['id'], $label, $key );
         }
         $html .= sprintf( '<span class="description"> %s</label>', $args['desc'] );
@@ -207,7 +206,7 @@ class WeDevs_Settings_API {
         $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
         $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
 
-        $html = sprintf( '<select class="%1$s%4$s" name="%2$s[%3$s]" id="%2$s[%3$s]">', $size, $args['section'], $args['id'] , $args['class'] );
+        $html = sprintf( '<select class="%1$s" name="%2$s[%3$s]" id="%2$s[%3$s]">', $size, $args['section'], $args['id'] );
         foreach ($args['options'] as $key => $label) {
             $html .= sprintf( '<option value="%s"%s>%s</option>', $key, selected( $value, $key, false ), $label );
         }
@@ -227,7 +226,7 @@ class WeDevs_Settings_API {
         $value = esc_textarea( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
         $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
 
-        $html = sprintf( '<textarea rows="5" cols="55" class="%1$s-text%5$s" id="%2$s[%3$s]" name="%2$s[%3$s]">%4$s</textarea>', $size, $args['section'], $args['id'], $value , $args['class'] );
+        $html = sprintf( '<textarea rows="5" cols="55" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]">%4$s</textarea>', $size, $args['section'], $args['id'], $value );
         $html .= sprintf( '<br><span class="description"> %s</span>', $args['desc'] );
 
         echo $html;
@@ -259,20 +258,6 @@ class WeDevs_Settings_API {
         echo '</div>';
 
         echo sprintf( '<br><span class="description"> %s</span>', $args['desc'] );
-    }
-    
-    /**
-     * Hidden field for a settings field
-     *
-     * @param array $args settings field args
-     */
-    function callback_hidden ( $args ) {
-
-        $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
-        $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
-        $html = sprintf( '<input type="text" class="%1$s-hidden%5$s" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value , $args['class'] );
-        
-        echo $html;
     }
 
     /**
@@ -317,17 +302,12 @@ class WeDevs_Settings_API {
      * This function displays every sections in a different form
      */
     function show_forms() {
-        // Multisite hack
-        $action = 'options.php';
-        if( is_multisite() && is_network_admin() )
-        $action = '../options.php';
-        
         ?>
         <div class="metabox-holder">
             <div class="postbox">
                 <?php foreach ($this->settings_sections as $form) { ?>
                     <div id="<?php echo $form['id']; ?>" class="group">
-                        <form method="post" action="<?php echo $action ?>">
+                        <form method="post" action="options.php">
 
                             <?php settings_fields( $form['id'] ); ?>
                             <?php do_settings_sections( $form['id'] ); ?>
