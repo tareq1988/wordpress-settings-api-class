@@ -7,8 +7,8 @@
  * @link http://tareq.weDevs.com Tareq's Planet
  * @example settings-api.php How to use the class
  */
-if ( !class_exists('WeDevs_Settings_API' ) ):
-class WeDevs_Settings_API {
+if ( !class_exists( 'WeDevs_Settings_API' ) ):
+    class WeDevs_Settings_API {
 
     /**
      * settings sections array
@@ -46,7 +46,7 @@ class WeDevs_Settings_API {
     /**
      * Set settings sections
      *
-     * @param array $sections setting sections array
+     * @param array   $sections setting sections array
      */
     function set_sections( $sections ) {
         $this->settings_sections = $sections;
@@ -55,7 +55,7 @@ class WeDevs_Settings_API {
     /**
      * Add a single section
      *
-     * @param array $section
+     * @param array   $section
      */
     function add_section( $section ) {
         $this->settings_sections[] = $section;
@@ -64,7 +64,7 @@ class WeDevs_Settings_API {
     /**
      * Set settings fields
      *
-     * @param array $fields settings fields array
+     * @param array   $fields settings fields array
      */
     function set_fields( $fields ) {
         $this->settings_fields = $fields;
@@ -93,7 +93,7 @@ class WeDevs_Settings_API {
     function admin_init() {
 
         //register settings sections
-        foreach ($this->settings_sections as $section) {
+        foreach ( $this->settings_sections as $section ) {
             if ( false == get_option( $section['id'] ) ) {
                 add_option( $section['id'] );
             }
@@ -102,8 +102,8 @@ class WeDevs_Settings_API {
         }
 
         //register settings fields
-        foreach ($this->settings_fields as $section => $field) {
-            foreach ($field as $option) {
+        foreach ( $this->settings_fields as $section => $field ) {
+            foreach ( $field as $option ) {
 
                 $type = isset( $option['type'] ) ? $option['type'] : 'text';
 
@@ -117,12 +117,12 @@ class WeDevs_Settings_API {
                     'std' => isset( $option['default'] ) ? $option['default'] : ''
                 );
                 //var_dump($args);
-                add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array($this, 'callback_' . $type), $section, $section, $args );
+                add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array( $this, 'callback_' . $type ), $section, $section, $args );
             }
         }
 
         // creates our settings in the options table
-        foreach ($this->settings_sections as $section) {
+        foreach ( $this->settings_sections as $section ) {
             register_setting( $section['id'], $section['id'] );
         }
     }
@@ -130,7 +130,7 @@ class WeDevs_Settings_API {
     /**
      * Displays a text field for a settings field
      *
-     * @param array $args settings field args
+     * @param array   $args settings field args
      */
     function callback_text( $args ) {
 
@@ -146,7 +146,7 @@ class WeDevs_Settings_API {
     /**
      * Displays a checkbox for a settings field
      *
-     * @param array $args settings field args
+     * @param array   $args settings field args
      */
     function callback_checkbox( $args ) {
 
@@ -161,14 +161,14 @@ class WeDevs_Settings_API {
     /**
      * Displays a multicheckbox a settings field
      *
-     * @param array $args settings field args
+     * @param array   $args settings field args
      */
     function callback_multicheck( $args ) {
 
         $value = $this->get_option( $args['id'], $args['section'], $args['std'] );
 
         $html = '';
-        foreach ($args['options'] as $key => $label) {
+        foreach ( $args['options'] as $key => $label ) {
             $checked = isset( $value[$key] ) ? $value[$key] : '0';
             $html .= sprintf( '<input type="checkbox" class="checkbox" id="%1$s[%2$s][%3$s]" name="%1$s[%2$s][%3$s]" value="%3$s"%4$s />', $args['section'], $args['id'], $key, checked( $checked, $key, false ) );
             $html .= sprintf( '<label for="%1$s[%2$s][%4$s]"> %3$s</label><br>', $args['section'], $args['id'], $label, $key );
@@ -181,14 +181,14 @@ class WeDevs_Settings_API {
     /**
      * Displays a multicheckbox a settings field
      *
-     * @param array $args settings field args
+     * @param array   $args settings field args
      */
     function callback_radio( $args ) {
 
         $value = $this->get_option( $args['id'], $args['section'], $args['std'] );
 
         $html = '';
-        foreach ($args['options'] as $key => $label) {
+        foreach ( $args['options'] as $key => $label ) {
             $html .= sprintf( '<input type="radio" class="radio" id="%1$s[%2$s][%3$s]" name="%1$s[%2$s]" value="%3$s"%4$s />', $args['section'], $args['id'], $key, checked( $value, $key, false ) );
             $html .= sprintf( '<label for="%1$s[%2$s][%4$s]"> %3$s</label><br>', $args['section'], $args['id'], $label, $key );
         }
@@ -200,7 +200,7 @@ class WeDevs_Settings_API {
     /**
      * Displays a selectbox for a settings field
      *
-     * @param array $args settings field args
+     * @param array   $args settings field args
      */
     function callback_select( $args ) {
 
@@ -208,7 +208,7 @@ class WeDevs_Settings_API {
         $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
 
         $html = sprintf( '<select class="%1$s" name="%2$s[%3$s]" id="%2$s[%3$s]">', $size, $args['section'], $args['id'] );
-        foreach ($args['options'] as $key => $label) {
+        foreach ( $args['options'] as $key => $label ) {
             $html .= sprintf( '<option value="%s"%s>%s</option>', $key, selected( $value, $key, false ), $label );
         }
         $html .= sprintf( '</select>' );
@@ -220,7 +220,7 @@ class WeDevs_Settings_API {
     /**
      * Displays a textarea for a settings field
      *
-     * @param array $args settings field args
+     * @param array   $args settings field args
      */
     function callback_textarea( $args ) {
 
@@ -236,7 +236,7 @@ class WeDevs_Settings_API {
     /**
      * Displays a textarea for a settings field
      *
-     * @param array $args settings field args
+     * @param array   $args settings field args
      */
     function callback_html( $args ) {
         echo $args['desc'];
@@ -245,7 +245,7 @@ class WeDevs_Settings_API {
     /**
      * Displays a rich text textarea for a settings field
      *
-     * @param array $args settings field args
+     * @param array   $args settings field args
      */
     function callback_wysiwyg( $args ) {
 
@@ -254,7 +254,7 @@ class WeDevs_Settings_API {
 
         echo '<div style="width: ' . $size . ';">';
 
-        wp_editor( $value, $args['section'] . '[' . $args['id'] . ']', array('teeny' => true, 'textarea_rows' => 10) );
+        wp_editor( $value, $args['section'] . '[' . $args['id'] . ']', array( 'teeny' => true, 'textarea_rows' => 10 ) );
 
         echo '</div>';
 
@@ -264,9 +264,9 @@ class WeDevs_Settings_API {
     /**
      * Get the value of a settings field
      *
-     * @param string $option settings field name
-     * @param string $section the section name this field belongs to
-     * @param string $default default text if it's not found
+     * @param string  $option  settings field name
+     * @param string  $section the section name this field belongs to
+     * @param string  $default default text if it's not found
      * @return string
      */
     function get_option( $option, $section, $default = '' ) {
@@ -288,7 +288,7 @@ class WeDevs_Settings_API {
     function show_navigation() {
         $html = '<h2 class="nav-tab-wrapper">';
 
-        foreach ($this->settings_sections as $tab) {
+        foreach ( $this->settings_sections as $tab ) {
             $html .= sprintf( '<a href="#%1$s" class="nav-tab" id="%1$s-tab">%2$s</a>', $tab['id'], $tab['title'] );
         }
 
@@ -303,10 +303,10 @@ class WeDevs_Settings_API {
      * This function displays every sections in a different form
      */
     function show_forms() {
-        ?>
+?>
         <div class="metabox-holder">
             <div class="postbox">
-                <?php foreach ($this->settings_sections as $form) { ?>
+                <?php foreach ( $this->settings_sections as $form ) { ?>
                     <div id="<?php echo $form['id']; ?>" class="group">
                         <form method="post" action="options.php">
 
@@ -331,7 +331,7 @@ class WeDevs_Settings_API {
      * This code uses localstorage for displaying active tabs
      */
     function script() {
-        ?>
+?>
         <script>
             jQuery(document).ready(function($) {
                 // Switches option sections
