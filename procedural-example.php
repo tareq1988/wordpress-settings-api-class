@@ -11,6 +11,7 @@
 /**
  * Registers settings section and fields
  */
+if ( !function_exists('wedevs_admin_init' ) ):
 function wedevs_admin_init() {
 
     $sections = array(
@@ -202,23 +203,25 @@ function wedevs_admin_init() {
     //initialize them
     $settings_api->admin_init();
 }
-
+endif;
 add_action( 'admin_init', 'wedevs_admin_init' );
 
+if ( !function_exists('wedevs_admin_menu' ) ):
 /**
  * Register the plugin page
  */
 function wedevs_admin_menu() {
     add_options_page( 'Settings API', 'Settings API', 'delete_posts', 'settings_api_test', 'wedevs_plugin_page' );
 }
-
+endif; 
 add_action( 'admin_menu', 'wedevs_admin_menu' );
 
 /**
  * Display the plugin settings options page
  */
+if ( !function_exists('wedevs_plugin_page' ) ):
 function wedevs_plugin_page() {
-    $settings_api = WeDevs_Settings_API::getInstance();
+    $settings_api = new WeDevs_Settings_API;
 
     echo '<div class="wrap">';
     settings_errors();
@@ -228,3 +231,4 @@ function wedevs_plugin_page() {
 
     echo '</div>';
 }
+endif;

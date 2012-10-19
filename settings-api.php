@@ -15,6 +15,7 @@ require_once dirname( __FILE__ ) . '/class.settings-api.php';
  *
  * @author Tareq Hasan
  */
+if ( !class_exists('WeDevs_Settings_API_Test' ) ):
 class WeDevs_Settings_API_Test {
 
     private $settings_api;
@@ -260,5 +261,6 @@ class WeDevs_Settings_API_Test {
     }
 
 }
+endif; 
 
 $settings = new WeDevs_Settings_API_Test();
