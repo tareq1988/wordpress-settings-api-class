@@ -303,15 +303,17 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
      * This function displays every sections in a different form
      */
     function show_forms() {
-?>
+        ?>
         <div class="metabox-holder">
             <div class="postbox">
                 <?php foreach ( $this->settings_sections as $form ) { ?>
                     <div id="<?php echo $form['id']; ?>" class="group">
                         <form method="post" action="options.php">
 
+                            <?php do_action( 'wsa_form_top_' . $form['id'], $form ); ?>
                             <?php settings_fields( $form['id'] ); ?>
                             <?php do_settings_sections( $form['id'] ); ?>
+                            <?php do_action( 'wsa_form_bottom_' . $form['id'], $form ); ?>
 
                             <div style="padding-left: 10px">
                                 <?php submit_button(); ?>
@@ -331,7 +333,7 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
      * This code uses localstorage for displaying active tabs
      */
     function script() {
-?>
+        ?>
         <script>
             jQuery(document).ready(function($) {
                 // Switches option sections
