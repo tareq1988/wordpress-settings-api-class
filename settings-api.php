@@ -18,23 +18,8 @@ require_once dirname( __FILE__ ) . '/class.settings-api.php';
 if ( !class_exists('WeDevs_Settings_API_Test' ) ):
 class WeDevs_Settings_API_Test {
 
-    private $settings_api;
-
     function __construct() {
-        $this->settings_api = new WeDevs_Settings_API;
-
-        add_action( 'admin_init', array($this, 'admin_init') );
         add_action( 'admin_menu', array($this, 'admin_menu') );
-    }
-
-    function admin_init() {
-
-        //set the settings
-        $this->settings_api->set_sections( $this->get_settings_sections() );
-        $this->settings_api->set_fields( $this->get_settings_fields() );
-
-        //initialize settings
-        $this->settings_api->admin_init();
     }
 
     function admin_menu() {
@@ -237,8 +222,14 @@ class WeDevs_Settings_API_Test {
         echo '<div class="wrap">';
         settings_errors();
 
-        $this->settings_api->show_navigation();
-        $this->settings_api->show_forms();
+        $settings_api = new WeDevs_Settings_API();
+
+        $settings_api->set_sections( $this->get_settings_sections() )
+            ->set_fields( $this->get_settings_fields() )
+            ->admin_init();
+
+        $settings_api->show_navigation();
+        $settings_api->show_forms();
 
         echo '</div>';
     }
@@ -261,6 +252,6 @@ class WeDevs_Settings_API_Test {
     }
 
 }
-endif; 
+endif;
 
 $settings = new WeDevs_Settings_API_Test();
