@@ -32,9 +32,21 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
     private static $_instance;
 
     public function __construct() {
+        add_action('admin_enqueue_scripts', array(&$this, 'admin_enqueue_scripts'));
 
     }
 
+    /**
+    * Enqueue scripts and styles
+    */
+    function admin_enqueue_scripts() {
+        wp_enqueue_style('thickbox');
+
+        wp_enqueue_script('jquery');
+        wp_enqueue_script('media-upload');
+        wp_enqueue_script('thickbox');
+    }
+        
     /**
      * Set settings sections
      *
@@ -261,7 +273,56 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
 
         echo sprintf( '<br><span class="description"> %s</span>', $args['desc'] );
     }
+    
+    /**
+     * Displays a file upload field for a settings field
+     *
+     * @param array   $args settings field args
+     */
+    function callback_file( $args ) {
 
+        $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
+        $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
+        $id = $args['section']  . '[' . $args['id'] . ']';
+        $js_id = $args['section']  . '\\\\[' . $args['id'] . '\\\\]';
+        $html = sprintf( '<input type="text" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
+        $html .= '<input type="button" class="button wpsf-browse" id="'. $id .'_button" value="Browse" /> 
+        <script type="text/javascript">
+        jQuery(document).ready(function($){
+            $("#'. $js_id .'_button").click(function() {
+                tb_show("", "media-upload.php?post_id=0&amp;type=image&amp;TB_iframe=true");
+                window.original_send_to_editor = window.send_to_editor;
+            window.send_to_editor = function(html) {
+                var imgurl = $("img",html).attr("src");
+                $("#'. $js_id .'").val(imgurl);
+                tb_remove();
+                window.send_to_editor = window.original_send_to_editor;
+            };
+                return false;
+            });
+        });
+        </script>';
+        $html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
+
+        echo $html;
+    }    
+
+     /**
+     * Displays a password field for a settings field
+     *
+     * @param array   $args settings field args
+     */
+    function callback_password( $args ) {
+
+        $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
+        $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
+
+        $html = sprintf( '<input type="password" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
+        $html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
+
+        echo $html;
+    }
+    
     /**
      * Get the value of a settings field
      *

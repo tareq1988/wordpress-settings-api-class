@@ -118,6 +118,20 @@ class WeDevs_Settings_API_Test {
                         'yes' => 'Yes',
                         'no' => 'No'
                     )
+                ),
+                array(
+                    'name' => 'password',
+                    'label' => __( 'Password', 'wedevs' ),
+                    'desc' => __( 'Password description', 'wedevs' ),
+                    'type' => 'password',
+                    'default' => ''
+                ),
+                array(
+                    'name' => 'file',
+                    'label' => __( 'File', 'wedevs' ),
+                    'desc' => __( 'File description', 'wedevs' ),
+                    'type' => 'file',
+                    'default' => ''
                 )
             ),
             'wedevs_advanced' => array(
@@ -173,6 +187,20 @@ class WeDevs_Settings_API_Test {
                         'yes' => 'Yes',
                         'no' => 'No'
                     )
+                ),
+                array(
+                    'name' => 'password',
+                    'label' => __( 'Password', 'wedevs' ),
+                    'desc' => __( 'Password description', 'wedevs' ),
+                    'type' => 'password',
+                    'default' => ''
+                ),
+                array(
+                    'name' => 'file',
+                    'label' => __( 'File', 'wedevs' ),
+                    'desc' => __( 'File description', 'wedevs' ),
+                    'type' => 'file',
+                    'default' => ''
                 )
             ),
             'wedevs_others' => array(
@@ -226,6 +254,20 @@ class WeDevs_Settings_API_Test {
                         'yes' => 'Yes',
                         'no' => 'No'
                     )
+                ),
+                array(
+                    'name' => 'password',
+                    'label' => __( 'Password', 'wedevs' ),
+                    'desc' => __( 'Password description', 'wedevs' ),
+                    'type' => 'password',
+                    'default' => ''
+                ),
+                array(
+                    'name' => 'file',
+                    'label' => __( 'File', 'wedevs' ),
+                    'desc' => __( 'File description', 'wedevs' ),
+                    'type' => 'file',
+                    'default' => ''
                 )
             )
         );
