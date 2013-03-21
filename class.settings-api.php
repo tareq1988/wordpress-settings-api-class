@@ -293,8 +293,11 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
                 tb_show("", "media-upload.php?post_id=0&amp;type=image&amp;TB_iframe=true");
                 window.original_send_to_editor = window.send_to_editor;
             window.send_to_editor = function(html) {
-                var imgurl = $("img",html).attr("src");
-                $("#'. $js_id .'").val(imgurl);
+				var url = $(html).attr('href');
+				if ( !url ) {
+					url = $(html).attr('src');
+				};
+                $("#'. $js_id .'").val(url);
                 tb_remove();
                 window.send_to_editor = window.original_send_to_editor;
             };
