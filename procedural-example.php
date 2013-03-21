@@ -82,6 +82,20 @@ if ( !function_exists( 'wedevs_admin_init' ) ):
                         'yes' => 'Yes',
                         'no' => 'No'
                     )
+                ),
+                array(
+                    'name' => 'password',
+                    'label' => __( 'Password', 'wedevs' ),
+                    'desc' => __( 'Password description', 'wedevs' ),
+                    'type' => 'password',
+                    'default' => ''
+                ),
+                array(
+                    'name' => 'file',
+                    'label' => __( 'File', 'wedevs' ),
+                    'desc' => __( 'File description', 'wedevs' ),
+                    'type' => 'file',
+                    'default' => ''
                 )
             ),
             'wedevs_advanced' => array(
@@ -137,6 +151,20 @@ if ( !function_exists( 'wedevs_admin_init' ) ):
                         'yes' => 'Yes',
                         'no' => 'No'
                     )
+                ),
+                array(
+                    'name' => 'password',
+                    'label' => __( 'Password', 'wedevs' ),
+                    'desc' => __( 'Password description', 'wedevs' ),
+                    'type' => 'password',
+                    'default' => ''
+                ),
+                array(
+                    'name' => 'file',
+                    'label' => __( 'File', 'wedevs' ),
+                    'desc' => __( 'File description', 'wedevs' ),
+                    'type' => 'file',
+                    'default' => ''
                 )
             ),
             'wedevs_others' => array(
@@ -190,6 +218,20 @@ if ( !function_exists( 'wedevs_admin_init' ) ):
                         'yes' => 'Yes',
                         'no' => 'No'
                     )
+                ),
+                array(
+                    'name' => 'password',
+                    'label' => __( 'Password', 'wedevs' ),
+                    'desc' => __( 'Password description', 'wedevs' ),
+                    'type' => 'password',
+                    'default' => ''
+                ),
+                array(
+                    'name' => 'file',
+                    'label' => __( 'File', 'wedevs' ),
+                    'desc' => __( 'File description', 'wedevs' ),
+                    'type' => 'file',
+                    'default' => ''
                 )
             )
         );
