@@ -49,6 +49,8 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
     /**
      * Print the JS in <head> instead of inlining it in body
      * 
+     * Proper way would be enqueueing it with wp_enqueue_script
+     * But that requires the class being packaged as an actual WP plugin
      */
     function admin_head() {
         ob_start();
