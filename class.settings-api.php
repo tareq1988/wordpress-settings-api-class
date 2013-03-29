@@ -114,7 +114,11 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
      * registers them to WordPress and ready for use.
      */
     function admin_init() {
-
+        global $parent_file; 
+        // Bail if current screen is not an options screen
+        if ( 'options-general.php' !== $parent_file )
+            return;
+        
         //register settings sections
         foreach ( $this->settings_sections as $section ) {
             if ( false == get_option( $section['id'] ) ) {
@@ -139,7 +143,6 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
                     'options' => isset( $option['options'] ) ? $option['options'] : '',
                     'std' => isset( $option['default'] ) ? $option['default'] : ''
                 );
-                //var_dump($args);
                 add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array( $this, 'callback_' . $type ), $section, $section, $args );
             }
         }
