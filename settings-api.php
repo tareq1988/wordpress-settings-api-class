@@ -68,11 +68,12 @@ class WeDevs_Settings_API_Test {
         $settings_fields = array(
             'wedevs_basics' => array(
                 array(
-                    'name' => 'text',
-                    'label' => __( 'Text Input', 'wedevs' ),
+                    'name' => 'text_val',
+                    'label' => __( 'Text Input (integer validation)', 'wedevs' ),
                     'desc' => __( 'Text input description', 'wedevs' ),
                     'type' => 'text',
-                    'default' => 'Title'
+                    'default' => 'Title',
+                    'sanitize_callback' => 'intval'
                 ),
                 array(
                     'name' => 'textarea',

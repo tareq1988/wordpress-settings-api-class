@@ -142,6 +142,7 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
                     'size' => isset( $option['size'] ) ? $option['size'] : null,
                     'options' => isset( $option['options'] ) ? $option['options'] : '',
                     'std' => isset( $option['default'] ) ? $option['default'] : '',
+                    'sanitize_callback' => isset( $option['sanitize_callback'] ) ? $option['sanitize_callback'] : '',
                 );
                 add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array( $this, 'callback_' . $type ), $section, $section, $args );
             }
@@ -149,7 +150,7 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
 
         // creates our settings in the options table
         foreach ( $this->settings_sections as $section ) {
-            register_setting( $section['id'], $section['id']/*, array( $this, 'default_sanitize_callback' )*/ );
+            register_setting( $section['id'], $section['id'], array( $this, 'sanitize_options' ) );
         }
     }
 
@@ -340,9 +341,49 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
         echo $html;
     }
 
-    function default_sanitize_callback( $value ) {
-        //
-    }
+    /**
+     * Sanitize callback for Settings API
+     */ 
+		function sanitize_options( $options ) {
+			foreach( $options as $option_slug => $option_value ) {
+				$sanitize_callback = $this->get_sanitize_callback( $option_slug );
+
+				// If callback is set, call it
+				if ( $sanitize_callback ) {
+					$options[ $option_slug ] = call_user_func( $sanitize_callback, $option_value );
+					continue;
+				}
+
+				// Treat everything that's not an array as a string
+				if ( !is_array( $option_value ) ) {
+					$options[ $option_slug ] = sanitize_text_field( $option_value );
+					continue;
+				}
+			}
+			return $options;
+		}
+		
+		/**
+		 * Get sanitization callback for given option slug
+		 * 
+		 * @param string $slug option slug
+		 * 
+		 * @return mixed string or bool false
+		 */ 
+		function get_sanitize_callback( $slug = '' ) {
+			if ( empty( $slug ) )
+				return false;
+			// Iterate over registered fields and see if we can find proper callback
+			foreach( $this->settings_fields as $section => $options ) {
+				foreach ( $options as $option ) {
+					if ( $option['name'] != $slug )
+						continue;
+					// Return the callback name 
+					return isset( $option['sanitize_callback'] ) && is_callable( $option['sanitize_callback'] ) ? $option['sanitize_callback'] : false;
+				}
+			}
+			return false; 
+		}
 
     /**
      * Get the value of a settings field
