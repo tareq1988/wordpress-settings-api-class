@@ -34,9 +34,7 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
     public function __construct() {
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
         add_action( 'admin_head', array( $this, 'admin_head' ) );
-
-    }
-
+		}
     /**
      * Enqueue scripts and styles
      */

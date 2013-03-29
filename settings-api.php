@@ -278,7 +278,6 @@ class WeDevs_Settings_API_Test {
 
     function plugin_page() {
         echo '<div class="wrap">';
-        settings_errors();
 
         $this->settings_api->show_navigation();
         $this->settings_api->show_forms();
