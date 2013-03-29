@@ -32,21 +32,30 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
     private static $_instance;
 
     public function __construct() {
-        add_action('admin_enqueue_scripts', array(&$this, 'admin_enqueue_scripts'));
-
+        add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+        add_action( 'admin_head', array( $this, 'admin_head' ) );
+		}
+    /**
+     * Enqueue scripts and styles
+     */
+    function admin_enqueue_scripts() {
+        wp_enqueue_script( 'jquery' );
+        wp_enqueue_script( 'media-upload' );
+        wp_enqueue_script( 'thickbox' );
     }
 
     /**
-    * Enqueue scripts and styles
-    */
-    function admin_enqueue_scripts() {
-        wp_enqueue_style('thickbox');
-
-        wp_enqueue_script('jquery');
-        wp_enqueue_script('media-upload');
-        wp_enqueue_script('thickbox');
+     * Print the JS in <head> instead of inlining it in body
+     *
+     * Proper way would be enqueueing it with wp_enqueue_script
+     * But that requires the class being packaged as an actual WP plugin
+     */
+    function admin_head() {
+        ob_start();
+        require_once __DIR__ . '/inc/js/wsa.js';
+        $output = '<script>' . ob_get_clean() . '</script>';
+        echo $output;
     }
-        
     /**
      * Set settings sections
      *
@@ -103,6 +112,10 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
      * registers them to WordPress and ready for use.
      */
     function admin_init() {
+        global $parent_file; 
+        // Bail if current screen is not an options screen
+        if (  !in_array( $parent_file, array( '', 'options-general.php' ) )  )
+            return;
 
         //register settings sections
         foreach ( $this->settings_sections as $section ) {
@@ -126,16 +139,16 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
                     'section' => $section,
                     'size' => isset( $option['size'] ) ? $option['size'] : null,
                     'options' => isset( $option['options'] ) ? $option['options'] : '',
-                    'std' => isset( $option['default'] ) ? $option['default'] : ''
+                    'std' => isset( $option['default'] ) ? $option['default'] : '',
+                    'sanitize_callback' => isset( $option['sanitize_callback'] ) ? $option['sanitize_callback'] : '',
                 );
-                //var_dump($args);
                 add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array( $this, 'callback_' . $type ), $section, $section, $args );
             }
         }
 
         // creates our settings in the options table
         foreach ( $this->settings_sections as $section ) {
-            register_setting( $section['id'], $section['id'] );
+            register_setting( $section['id'], $section['id'], array( $this, 'sanitize_options' ) );
         }
     }
 
@@ -273,7 +286,7 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
 
         echo sprintf( '<br><span class="description"> %s</span>', $args['desc'] );
     }
-    
+
     /**
      * Displays a file upload field for a settings field
      *
@@ -286,17 +299,17 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
         $id = $args['section']  . '[' . $args['id'] . ']';
         $js_id = $args['section']  . '\\\\[' . $args['id'] . '\\\\]';
         $html = sprintf( '<input type="text" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
-        $html .= '<input type="button" class="button wpsf-browse" id="'. $id .'_button" value="Browse" /> 
+        $html .= '<input type="button" class="button wpsf-browse" id="'. $id .'_button" value="Browse" />
         <script type="text/javascript">
         jQuery(document).ready(function($){
             $("#'. $js_id .'_button").click(function() {
                 tb_show("", "media-upload.php?post_id=0&amp;type=image&amp;TB_iframe=true");
                 window.original_send_to_editor = window.send_to_editor;
             window.send_to_editor = function(html) {
-				var url = $(html).attr(\'href\');
-				if ( !url ) {
-					url = $(html).attr(\'src\');
-				};
+                var url = $(html).attr(\'href\');
+                if ( !url ) {
+                    url = $(html).attr(\'src\');
+                };
                 $("#'. $js_id .'").val(url);
                 tb_remove();
                 window.send_to_editor = window.original_send_to_editor;
@@ -308,9 +321,9 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
         $html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
 
         echo $html;
-    }    
+    }
 
-     /**
+    /**
      * Displays a password field for a settings field
      *
      * @param array   $args settings field args
@@ -325,7 +338,51 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
 
         echo $html;
     }
-    
+
+    /**
+     * Sanitize callback for Settings API
+     */ 
+		function sanitize_options( $options ) {
+			foreach( $options as $option_slug => $option_value ) {
+				$sanitize_callback = $this->get_sanitize_callback( $option_slug );
+
+				// If callback is set, call it
+				if ( $sanitize_callback ) {
+					$options[ $option_slug ] = call_user_func( $sanitize_callback, $option_value );
+					continue;
+				}
+
+				// Treat everything that's not an array as a string
+				if ( !is_array( $option_value ) ) {
+					$options[ $option_slug ] = sanitize_text_field( $option_value );
+					continue;
+				}
+			}
+			return $options;
+		}
+		
+		/**
+		 * Get sanitization callback for given option slug
+		 * 
+		 * @param string $slug option slug
+		 * 
+		 * @return mixed string or bool false
+		 */ 
+		function get_sanitize_callback( $slug = '' ) {
+			if ( empty( $slug ) )
+				return false;
+			// Iterate over registered fields and see if we can find proper callback
+			foreach( $this->settings_fields as $section => $options ) {
+				foreach ( $options as $option ) {
+					if ( $option['name'] != $slug )
+						continue;
+					// Return the callback name 
+					return isset( $option['sanitize_callback'] ) && is_callable( $option['sanitize_callback'] ) ? $option['sanitize_callback'] : false;
+				}
+			}
+			return false; 
+		}
+
     /**
      * Get the value of a settings field
      *
@@ -368,7 +425,7 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
      * This function displays every sections in a different form
      */
     function show_forms() {
-        ?>
+?>
         <div class="metabox-holder">
             <div class="postbox">
                 <?php foreach ( $this->settings_sections as $form ) { ?>
@@ -389,61 +446,6 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
             </div>
         </div>
         <?php
-        $this->script();
     }
-
-    /**
-     * Tabbable JavaScript codes
-     *
-     * This code uses localstorage for displaying active tabs
-     */
-    function script() {
-        ?>
-        <script>
-            jQuery(document).ready(function($) {
-                // Switches option sections
-                $('.group').hide();
-                var activetab = '';
-                if (typeof(localStorage) != 'undefined' ) {
-                    activetab = localStorage.getItem("activetab");
-                }
-                if (activetab != '' && $(activetab).length ) {
-                    $(activetab).fadeIn();
-                } else {
-                    $('.group:first').fadeIn();
-                }
-                $('.group .collapsed').each(function(){
-                    $(this).find('input:checked').parent().parent().parent().nextAll().each(
-                    function(){
-                        if ($(this).hasClass('last')) {
-                            $(this).removeClass('hidden');
-                            return false;
-                        }
-                        $(this).filter('.hidden').removeClass('hidden');
-                    });
-                });
-
-                if (activetab != '' && $(activetab + '-tab').length ) {
-                    $(activetab + '-tab').addClass('nav-tab-active');
-                }
-                else {
-                    $('.nav-tab-wrapper a:first').addClass('nav-tab-active');
-                }
-                $('.nav-tab-wrapper a').click(function(evt) {
-                    $('.nav-tab-wrapper a').removeClass('nav-tab-active');
-                    $(this).addClass('nav-tab-active').blur();
-                    var clicked_group = $(this).attr('href');
-                    if (typeof(localStorage) != 'undefined' ) {
-                        localStorage.setItem("activetab", $(this).attr('href'));
-                    }
-                    $('.group').hide();
-                    $(clicked_group).fadeIn();
-                    evt.preventDefault();
-                });
-            });
-        </script>
-        <?php
-    }
-
 }
 endif;
