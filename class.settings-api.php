@@ -32,32 +32,32 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
     private static $_instance;
 
     public function __construct() {
-        add_action('admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+        add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
         add_action( 'admin_head', array( $this, 'admin_head' ) );
 
     }
 
     /**
-    * Enqueue scripts and styles
-    */
+     * Enqueue scripts and styles
+     */
     function admin_enqueue_scripts() {
-        wp_enqueue_script('jquery');
-        wp_enqueue_script('media-upload');
-        wp_enqueue_script('thickbox');
+        wp_enqueue_script( 'jquery' );
+        wp_enqueue_script( 'media-upload' );
+        wp_enqueue_script( 'thickbox' );
     }
-    
+
     /**
      * Print the JS in <head> instead of inlining it in body
-     * 
+     *
      * Proper way would be enqueueing it with wp_enqueue_script
      * But that requires the class being packaged as an actual WP plugin
      */
     function admin_head() {
         ob_start();
-        require_once( __DIR__ . '/inc/js/wsa.js' );
+        require_once __DIR__ . '/inc/js/wsa.js';
         $output = '<script>' . ob_get_clean() . '</script>';
         echo $output;
-    }    
+    }
     /**
      * Set settings sections
      *
@@ -284,7 +284,7 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
 
         echo sprintf( '<br><span class="description"> %s</span>', $args['desc'] );
     }
-    
+
     /**
      * Displays a file upload field for a settings field
      *
@@ -297,17 +297,17 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
         $id = $args['section']  . '[' . $args['id'] . ']';
         $js_id = $args['section']  . '\\\\[' . $args['id'] . '\\\\]';
         $html = sprintf( '<input type="text" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
-        $html .= '<input type="button" class="button wpsf-browse" id="'. $id .'_button" value="Browse" /> 
+        $html .= '<input type="button" class="button wpsf-browse" id="'. $id .'_button" value="Browse" />
         <script type="text/javascript">
         jQuery(document).ready(function($){
             $("#'. $js_id .'_button").click(function() {
                 tb_show("", "media-upload.php?post_id=0&amp;type=image&amp;TB_iframe=true");
                 window.original_send_to_editor = window.send_to_editor;
             window.send_to_editor = function(html) {
-				var url = $(html).attr(\'href\');
-				if ( !url ) {
-					url = $(html).attr(\'src\');
-				};
+                var url = $(html).attr(\'href\');
+                if ( !url ) {
+                    url = $(html).attr(\'src\');
+                };
                 $("#'. $js_id .'").val(url);
                 tb_remove();
                 window.send_to_editor = window.original_send_to_editor;
@@ -319,9 +319,9 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
         $html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
 
         echo $html;
-    }    
+    }
 
-     /**
+    /**
      * Displays a password field for a settings field
      *
      * @param array   $args settings field args
@@ -336,7 +336,7 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
 
         echo $html;
     }
-    
+
     /**
      * Get the value of a settings field
      *
@@ -379,7 +379,7 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
      * This function displays every sections in a different form
      */
     function show_forms() {
-        ?>
+?>
         <div class="metabox-holder">
             <div class="postbox">
                 <?php foreach ( $this->settings_sections as $form ) { ?>
