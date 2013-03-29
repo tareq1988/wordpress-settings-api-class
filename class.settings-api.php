@@ -116,9 +116,9 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
     function admin_init() {
         global $parent_file; 
         // Bail if current screen is not an options screen
-        if ( 'options-general.php' !== $parent_file )
+        if (  !in_array( $parent_file, array( '', 'options-general.php' ) )  )
             return;
-        
+
         //register settings sections
         foreach ( $this->settings_sections as $section ) {
             if ( false == get_option( $section['id'] ) ) {
@@ -141,7 +141,7 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
                     'section' => $section,
                     'size' => isset( $option['size'] ) ? $option['size'] : null,
                     'options' => isset( $option['options'] ) ? $option['options'] : '',
-                    'std' => isset( $option['default'] ) ? $option['default'] : ''
+                    'std' => isset( $option['default'] ) ? $option['default'] : '',
                 );
                 add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array( $this, 'callback_' . $type ), $section, $section, $args );
             }
@@ -149,7 +149,7 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
 
         // creates our settings in the options table
         foreach ( $this->settings_sections as $section ) {
-            register_setting( $section['id'], $section['id'] );
+            register_setting( $section['id'], $section['id']/*, array( $this, 'default_sanitize_callback' )*/ );
         }
     }
 
@@ -338,6 +338,10 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
         $html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
 
         echo $html;
+    }
+
+    function default_sanitize_callback( $value ) {
+        //
     }
 
     /**
