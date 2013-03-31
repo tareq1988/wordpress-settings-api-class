@@ -33,15 +33,12 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
 
     public function __construct() {
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
-        add_action( 'admin_head', array( $this, 'admin_head' ) );
-		}
-    }
+	}
 
     /**
      * Enqueue scripts and styles
      */
     function admin_enqueue_scripts() {
-
         wp_enqueue_script( 'jquery' );
         wp_enqueue_script( 'media-upload' );
         wp_enqueue_script( 'thickbox' );
@@ -103,11 +100,6 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
      * registers them to WordPress and ready for use.
      */
     function admin_init() {
-        global $parent_file; 
-        // Bail if current screen is not an options screen
-        if (  !in_array( $parent_file, array( '', 'options-general.php' ) )  )
-            return;
-
         //register settings sections
         foreach ( $this->settings_sections as $section ) {
             if ( false == get_option( $section['id'] ) ) {
