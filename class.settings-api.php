@@ -33,7 +33,7 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
 
     public function __construct() {
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
-	}
+    }
 
     /**
      * Enqueue scripts and styles
@@ -325,46 +325,46 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
     /**
      * Sanitize callback for Settings API
      */ 
-		function sanitize_options( $options ) {
-			foreach( $options as $option_slug => $option_value ) {
-				$sanitize_callback = $this->get_sanitize_callback( $option_slug );
+    function sanitize_options( $options ) {
+        foreach( $options as $option_slug => $option_value ) {
+            $sanitize_callback = $this->get_sanitize_callback( $option_slug );
 
-				// If callback is set, call it
-				if ( $sanitize_callback ) {
-					$options[ $option_slug ] = call_user_func( $sanitize_callback, $option_value );
-					continue;
-				}
+            // If callback is set, call it
+            if ( $sanitize_callback ) {
+                $options[ $option_slug ] = call_user_func( $sanitize_callback, $option_value );
+                continue;
+            }
 
-				// Treat everything that's not an array as a string
-				if ( !is_array( $option_value ) ) {
-					$options[ $option_slug ] = sanitize_text_field( $option_value );
-					continue;
-				}
-			}
-			return $options;
-		}
-		
-		/**
-		 * Get sanitization callback for given option slug
-		 * 
-		 * @param string $slug option slug
-		 * 
-		 * @return mixed string or bool false
-		 */ 
-		function get_sanitize_callback( $slug = '' ) {
-			if ( empty( $slug ) )
-				return false;
-			// Iterate over registered fields and see if we can find proper callback
-			foreach( $this->settings_fields as $section => $options ) {
-				foreach ( $options as $option ) {
-					if ( $option['name'] != $slug )
-						continue;
-					// Return the callback name 
-					return isset( $option['sanitize_callback'] ) && is_callable( $option['sanitize_callback'] ) ? $option['sanitize_callback'] : false;
-				}
-			}
-			return false; 
-		}
+            // Treat everything that's not an array as a string
+            if ( !is_array( $option_value ) ) {
+                $options[ $option_slug ] = sanitize_text_field( $option_value );
+                continue;
+            }
+        }
+        return $options;
+    }
+        
+    /**
+     * Get sanitization callback for given option slug
+     * 
+     * @param string $slug option slug
+     * 
+     * @return mixed string or bool false
+     */ 
+    function get_sanitize_callback( $slug = '' ) {
+        if ( empty( $slug ) )
+            return false;
+        // Iterate over registered fields and see if we can find proper callback
+        foreach( $this->settings_fields as $section => $options ) {
+            foreach ( $options as $option ) {
+                if ( $option['name'] != $slug )
+                    continue;
+                // Return the callback name 
+                return isset( $option['sanitize_callback'] ) && is_callable( $option['sanitize_callback'] ) ? $option['sanitize_callback'] : false;
+            }
+        }
+        return false; 
+    }
 
     /**
      * Get the value of a settings field
