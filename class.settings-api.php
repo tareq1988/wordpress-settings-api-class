@@ -8,7 +8,7 @@
  * @example settings-api.php How to use the class
  */
 if ( !class_exists( 'WeDevs_Settings_API' ) ):
-    class WeDevs_Settings_API {
+class WeDevs_Settings_API {
 
     /**
      * settings sections array
@@ -288,15 +288,15 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
             $("#'. $js_id .'_button").click(function() {
                 tb_show("", "media-upload.php?post_id=0&amp;type=image&amp;TB_iframe=true");
                 window.original_send_to_editor = window.send_to_editor;
-            window.send_to_editor = function(html) {
-                var url = $(html).attr(\'href\');
-                if ( !url ) {
-                    url = $(html).attr(\'src\');
+                window.send_to_editor = function(html) {
+                    var url = $(html).attr(\'href\');
+                    if ( !url ) {
+                        url = $(html).attr(\'src\');
+                    };
+                    $("#'. $js_id .'").val(url);
+                    tb_remove();
+                    window.send_to_editor = window.original_send_to_editor;
                 };
-                $("#'. $js_id .'").val(url);
-                tb_remove();
-                window.send_to_editor = window.original_send_to_editor;
-            };
                 return false;
             });
         });
@@ -324,7 +324,7 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
 
     /**
      * Sanitize callback for Settings API
-     */ 
+     */
     function sanitize_options( $options ) {
         foreach( $options as $option_slug => $option_value ) {
             $sanitize_callback = $this->get_sanitize_callback( $option_slug );
@@ -343,14 +343,14 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
         }
         return $options;
     }
-        
+
     /**
      * Get sanitization callback for given option slug
-     * 
+     *
      * @param string $slug option slug
-     * 
+     *
      * @return mixed string or bool false
-     */ 
+     */
     function get_sanitize_callback( $slug = '' ) {
         if ( empty( $slug ) )
             return false;
@@ -359,11 +359,11 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
             foreach ( $options as $option ) {
                 if ( $option['name'] != $slug )
                     continue;
-                // Return the callback name 
+                // Return the callback name
                 return isset( $option['sanitize_callback'] ) && is_callable( $option['sanitize_callback'] ) ? $option['sanitize_callback'] : false;
             }
         }
-        return false; 
+        return false;
     }
 
     /**
@@ -408,7 +408,7 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
      * This function displays every sections in a different form
      */
     function show_forms() {
-?>
+        ?>
         <div class="metabox-holder">
             <div class="postbox">
                 <?php foreach ( $this->settings_sections as $form ) { ?>
