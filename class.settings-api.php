@@ -106,7 +106,14 @@ class WeDevs_Settings_API {
                 add_option( $section['id'] );
             }
 
-            add_settings_section( $section['id'], $section['title'], '__return_false', $section['id'] );
+            if ( isset($section['desc']) && !empty($section['desc']) ) {
+                $section['desc'] = '<div class="inside">'.$section['desc'].'</div>';
+                $callback = create_function('', 'echo "'.str_replace('"', '\"', $section['desc']).'";');
+            } else {
+                $callback = '__return_false';
+            }
+
+            add_settings_section( $section['id'], $section['title'], $callback, $section['id'] );
         }
 
         //register settings fields
