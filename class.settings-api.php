@@ -39,6 +39,7 @@ class WeDevs_Settings_API {
      * Enqueue scripts and styles
      */
     function admin_enqueue_scripts() {
+        wp_enqueue_style( 'wp-color-picker' );
         wp_enqueue_script( 'jquery' );
         wp_enqueue_script( 'media-upload' );
         wp_enqueue_script( 'thickbox' );
@@ -330,6 +331,22 @@ class WeDevs_Settings_API {
     }
 
     /**
+     * Displays a color picker field for a settings field
+     *
+     * @param array   $args settings field args
+     */
+    function callback_color( $args ) {
+
+        $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
+        $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
+
+        $html = sprintf( '<input type="text" class="%1$s-text wp-color-picker-field" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
+        $html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
+
+        echo $html;
+    }
+    
+    /**
      * Sanitize callback for Settings API
      */
     function sanitize_options( $options ) {
@@ -440,7 +457,7 @@ class WeDevs_Settings_API {
     }
 
     /**
-     * Tabbable JavaScript codes
+     * Tabbable JavaScript codes & Initiate Color Picker
      *
      * This code uses localstorage for displaying active tabs
      */
@@ -448,6 +465,8 @@ class WeDevs_Settings_API {
         ?>
         <script>
             jQuery(document).ready(function($) {
+                //Initiate Color Picker
+                $('.wp-color-picker-field').wpColorPicker();
                 // Switches option sections
                 $('.group').hide();
                 var activetab = '';
