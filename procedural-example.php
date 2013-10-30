@@ -96,6 +96,13 @@ if ( !function_exists( 'wedevs_admin_init' ) ):
                     'desc' => __( 'File description', 'wedevs' ),
                     'type' => 'file',
                     'default' => ''
+                ),
+                array(
+                    'name' => 'color',
+                    'label' => __( 'Color', 'wedevs' ),
+                    'desc' => __( 'Color description', 'wedevs' ),
+                    'type' => 'color',
+                    'default' => ''
                 )
             ),
             'wedevs_advanced' => array(
@@ -165,6 +172,13 @@ if ( !function_exists( 'wedevs_admin_init' ) ):
                     'desc' => __( 'File description', 'wedevs' ),
                     'type' => 'file',
                     'default' => ''
+                ),
+                array(
+                    'name' => 'color',
+                    'label' => __( 'Color', 'wedevs' ),
+                    'desc' => __( 'Color description', 'wedevs' ),
+                    'type' => 'color',
+                    'default' => ''
                 )
             ),
             'wedevs_others' => array(
@@ -231,6 +245,13 @@ if ( !function_exists( 'wedevs_admin_init' ) ):
                     'label' => __( 'File', 'wedevs' ),
                     'desc' => __( 'File description', 'wedevs' ),
                     'type' => 'file',
+                    'default' => ''
+                ),
+                array(
+                    'name' => 'color',
+                    'label' => __( 'Color', 'wedevs' ),
+                    'desc' => __( 'Color description', 'wedevs' ),
+                    'type' => 'color',
                     'default' => ''
                 )
             )
