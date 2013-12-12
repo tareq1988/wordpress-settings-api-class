@@ -40,6 +40,7 @@ class WeDevs_Settings_API {
      */
     function admin_enqueue_scripts() {
         wp_enqueue_style( 'wp-color-picker' );
+
         wp_enqueue_script( 'wp-color-picker' );
         wp_enqueue_script( 'jquery' );
         wp_enqueue_script( 'media-upload' );
@@ -341,7 +342,7 @@ class WeDevs_Settings_API {
         $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
         $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
 
-        $html = sprintf( '<input type="text" class="%1$s-text wp-color-picker-field" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
+        $html = sprintf( '<input type="text" class="%1$s-text wp-color-picker-field" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s" data-default-color="%5$s" />', $size, $args['section'], $args['id'], $value, $args['std'] );
         $html .= sprintf( '<span class="description" style="display:block;"> %s</span>', $args['desc'] );
 
         echo $html;
@@ -511,7 +512,7 @@ class WeDevs_Settings_API {
         </script>
 
         <style type="text/css">
-            /* WordPress 3.8 Fix */
+            /** WordPress 3.8 Fix **/
             .form-table th { padding: 20px 10px; }
             #wpbody-content .metabox-holder { padding-top: 5px; }
         </style>
