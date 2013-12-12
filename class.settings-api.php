@@ -40,6 +40,7 @@ class WeDevs_Settings_API {
      */
     function admin_enqueue_scripts() {
         wp_enqueue_style( 'wp-color-picker' );
+        wp_enqueue_script( 'wp-color-picker' );
         wp_enqueue_script( 'jquery' );
         wp_enqueue_script( 'media-upload' );
         wp_enqueue_script( 'thickbox' );
@@ -345,7 +346,7 @@ class WeDevs_Settings_API {
 
         echo $html;
     }
-    
+
     /**
      * Sanitize callback for Settings API
      */
@@ -508,6 +509,12 @@ class WeDevs_Settings_API {
                 });
             });
         </script>
+
+        <style type="text/css">
+            /* WordPress 3.8 Fix */
+            .form-table th { padding: 20px 10px; }
+            #wpbody-content .metabox-holder { padding-top: 5px; }
+        </style>
         <?php
     }
 
