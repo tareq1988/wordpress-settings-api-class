@@ -137,34 +137,25 @@ class WeDevs_Settings_API_Test {
             ),
             'wedevs_advanced' => array(
                 array(
-                    'name' => 'text',
-                    'label' => __( 'Text Input', 'wedevs' ),
-                    'desc' => __( 'Text input description', 'wedevs' ),
-                    'type' => 'text',
-                    'default' => 'Title'
+                    'name' => 'color',
+                    'label' => __( 'Color', 'wedevs' ),
+                    'desc' => __( 'Color description', 'wedevs' ),
+                    'type' => 'color',
+                    'default' => ''
                 ),
                 array(
-                    'name' => 'textarea',
-                    'label' => __( 'Textarea Input', 'wedevs' ),
-                    'desc' => __( 'Textarea description', 'wedevs' ),
-                    'type' => 'textarea'
+                    'name' => 'password',
+                    'label' => __( 'Password', 'wedevs' ),
+                    'desc' => __( 'Password description', 'wedevs' ),
+                    'type' => 'password',
+                    'default' => ''
                 ),
                 array(
-                    'name' => 'checkbox',
-                    'label' => __( 'Checkbox', 'wedevs' ),
-                    'desc' => __( 'Checkbox Label', 'wedevs' ),
-                    'type' => 'checkbox'
-                ),
-                array(
-                    'name' => 'radio',
-                    'label' => __( 'Radio Button', 'wedevs' ),
-                    'desc' => __( 'A radio button', 'wedevs' ),
-                    'type' => 'radio',
-                    'default' => 'no',
-                    'options' => array(
-                        'yes' => 'Yes',
-                        'no' => 'No'
-                    )
+                    'name' => 'wysiwyg',
+                    'label' => __( 'Advanced Editor', 'wedevs' ),
+                    'desc' => __( 'WP_Editor description', 'wedevs' ),
+                    'type' => 'wysiwyg',
+                    'default' => ''
                 ),
                 array(
                     'name' => 'multicheck',
@@ -303,6 +294,6 @@ class WeDevs_Settings_API_Test {
     }
 
 }
-endif; 
+endif;
 
 $settings = new WeDevs_Settings_API_Test();
