@@ -274,7 +274,7 @@ class WeDevs_Settings_API {
 
         echo '<div style="width: ' . $size . ';">';
 
-        wp_editor( $value, $args['section'] . '[' . $args['id'] . ']', array( 'teeny' => true, 'textarea_rows' => 10 ) );
+        wp_editor( $value, $args['section'] .  $args['id'] , array( 'teeny' => false, 'textarea_rows' => 10 ) );
 
         echo '</div>';
 
