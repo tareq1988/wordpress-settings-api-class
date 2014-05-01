@@ -65,10 +65,14 @@ class WeDevs_Settings_API_Test {
      * @return array settings fields
      */
     function get_settings_fields() {
+        
+        //:: Prefix option id's to avoid collision with other themes & plugins
+        $prefix ='wedevs_';
+        
         $settings_fields = array(
             'wedevs_basics' => array(
                 array(
-                    'name' => 'text_val',
+                    'name' => $prefix .'text_val',
                     'label' => __( 'Text Input (integer validation)', 'wedevs' ),
                     'desc' => __( 'Text input description', 'wedevs' ),
                     'type' => 'text',
@@ -76,19 +80,19 @@ class WeDevs_Settings_API_Test {
                     'sanitize_callback' => 'intval'
                 ),
                 array(
-                    'name' => 'textarea',
+                    'name' => $prefix .'textarea',
                     'label' => __( 'Textarea Input', 'wedevs' ),
                     'desc' => __( 'Textarea description', 'wedevs' ),
                     'type' => 'textarea'
                 ),
                 array(
-                    'name' => 'checkbox',
+                    'name' => $prefix .'checkbox',
                     'label' => __( 'Checkbox', 'wedevs' ),
                     'desc' => __( 'Checkbox Label', 'wedevs' ),
                     'type' => 'checkbox'
                 ),
                 array(
-                    'name' => 'radio',
+                    'name' => $prefix .'radio',
                     'label' => __( 'Radio Button', 'wedevs' ),
                     'desc' => __( 'A radio button', 'wedevs' ),
                     'type' => 'radio',
@@ -98,7 +102,7 @@ class WeDevs_Settings_API_Test {
                     )
                 ),
                 array(
-                    'name' => 'multicheck',
+                    'name' => $prefix .'multicheck',
                     'label' => __( 'Multile checkbox', 'wedevs' ),
                     'desc' => __( 'Multi checkbox description', 'wedevs' ),
                     'type' => 'multicheck',
@@ -110,7 +114,7 @@ class WeDevs_Settings_API_Test {
                     )
                 ),
                 array(
-                    'name' => 'selectbox',
+                    'name' => $prefix .'selectbox',
                     'label' => __( 'A Dropdown', 'wedevs' ),
                     'desc' => __( 'Dropdown description', 'wedevs' ),
                     'type' => 'select',
@@ -121,14 +125,14 @@ class WeDevs_Settings_API_Test {
                     )
                 ),
                 array(
-                    'name' => 'password',
+                    'name' => $prefix .'password',
                     'label' => __( 'Password', 'wedevs' ),
                     'desc' => __( 'Password description', 'wedevs' ),
                     'type' => 'password',
                     'default' => ''
                 ),
                 array(
-                    'name' => 'file',
+                    'name' => $prefix .'file',
                     'label' => __( 'File', 'wedevs' ),
                     'desc' => __( 'File description', 'wedevs' ),
                     'type' => 'file',
@@ -137,28 +141,28 @@ class WeDevs_Settings_API_Test {
             ),
             'wedevs_advanced' => array(
                 array(
-                    'name' => 'color',
+                    'name' => $prefix .'color',
                     'label' => __( 'Color', 'wedevs' ),
                     'desc' => __( 'Color description', 'wedevs' ),
                     'type' => 'color',
                     'default' => ''
                 ),
                 array(
-                    'name' => 'password',
+                    'name' => $prefix .'password',
                     'label' => __( 'Password', 'wedevs' ),
                     'desc' => __( 'Password description', 'wedevs' ),
                     'type' => 'password',
                     'default' => ''
                 ),
                 array(
-                    'name' => 'wysiwyg',
+                    'name' => $prefix .'wysiwyg',
                     'label' => __( 'Advanced Editor', 'wedevs' ),
                     'desc' => __( 'WP_Editor description', 'wedevs' ),
                     'type' => 'wysiwyg',
                     'default' => ''
                 ),
                 array(
-                    'name' => 'multicheck',
+                    'name' => $prefix .'multicheck',
                     'label' => __( 'Multile checkbox', 'wedevs' ),
                     'desc' => __( 'Multi checkbox description', 'wedevs' ),
                     'type' => 'multicheck',
@@ -171,7 +175,7 @@ class WeDevs_Settings_API_Test {
                     )
                 ),
                 array(
-                    'name' => 'selectbox',
+                    'name' => $prefix .'selectbox',
                     'label' => __( 'A Dropdown', 'wedevs' ),
                     'desc' => __( 'Dropdown description', 'wedevs' ),
                     'type' => 'select',
@@ -181,14 +185,14 @@ class WeDevs_Settings_API_Test {
                     )
                 ),
                 array(
-                    'name' => 'password',
+                    'name' => $prefix .'password',
                     'label' => __( 'Password', 'wedevs' ),
                     'desc' => __( 'Password description', 'wedevs' ),
                     'type' => 'password',
                     'default' => ''
                 ),
                 array(
-                    'name' => 'file',
+                    'name' => $prefix .'file',
                     'label' => __( 'File', 'wedevs' ),
                     'desc' => __( 'File description', 'wedevs' ),
                     'type' => 'file',
@@ -197,26 +201,26 @@ class WeDevs_Settings_API_Test {
             ),
             'wedevs_others' => array(
                 array(
-                    'name' => 'text',
+                    'name' => $prefix .'text',
                     'label' => __( 'Text Input', 'wedevs' ),
                     'desc' => __( 'Text input description', 'wedevs' ),
                     'type' => 'text',
                     'default' => 'Title'
                 ),
                 array(
-                    'name' => 'textarea',
+                    'name' => $prefix .'textarea',
                     'label' => __( 'Textarea Input', 'wedevs' ),
                     'desc' => __( 'Textarea description', 'wedevs' ),
                     'type' => 'textarea'
                 ),
                 array(
-                    'name' => 'checkbox',
+                    'name' => $prefix .'checkbox',
                     'label' => __( 'Checkbox', 'wedevs' ),
                     'desc' => __( 'Checkbox Label', 'wedevs' ),
                     'type' => 'checkbox'
                 ),
                 array(
-                    'name' => 'radio',
+                    'name' => $prefix .'radio',
                     'label' => __( 'Radio Button', 'wedevs' ),
                     'desc' => __( 'A radio button', 'wedevs' ),
                     'type' => 'radio',
@@ -226,7 +230,7 @@ class WeDevs_Settings_API_Test {
                     )
                 ),
                 array(
-                    'name' => 'multicheck',
+                    'name' => $prefix .'multicheck',
                     'label' => __( 'Multile checkbox', 'wedevs' ),
                     'desc' => __( 'Multi checkbox description', 'wedevs' ),
                     'type' => 'multicheck',
@@ -238,7 +242,7 @@ class WeDevs_Settings_API_Test {
                     )
                 ),
                 array(
-                    'name' => 'selectbox',
+                    'name' => $prefix .$prefix .'selectbox',
                     'label' => __( 'A Dropdown', 'wedevs' ),
                     'desc' => __( 'Dropdown description', 'wedevs' ),
                     'type' => 'select',
@@ -248,14 +252,14 @@ class WeDevs_Settings_API_Test {
                     )
                 ),
                 array(
-                    'name' => 'password',
+                    'name' => $prefix .'password',
                     'label' => __( 'Password', 'wedevs' ),
                     'desc' => __( 'Password description', 'wedevs' ),
                     'type' => 'password',
                     'default' => ''
                 ),
                 array(
-                    'name' => 'file',
+                    'name' => $prefix .'file',
                     'label' => __( 'File', 'wedevs' ),
                     'desc' => __( 'File description', 'wedevs' ),
                     'type' => 'file',
