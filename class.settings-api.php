@@ -271,14 +271,59 @@ class WeDevs_Settings_API {
 
         $value = wpautop( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
         $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : '500px';
+        $textarea_name = esc_attr( $args['section'] . '[' . $args['id'] . ']' );
 
         echo '<div style="width: ' . $size . ';">';
 
-        wp_editor( $value, $args['section'] . '[' . $args['id'] . ']', array( 'teeny' => true, 'textarea_rows' => 10 ) );
+        wp_editor( $value, $args['id'], array( 'textarea_name' => $textarea_name,'teeny' => false, 'textarea_rows' => 10,'media_buttons' => false,'tinymce' => array( 'plugins' => 'wordpress' ) ) );
 
         echo '</div>';
 
         echo sprintf( '<br><span class="description"> %s</span>', $args['desc'] );
+    }
+    
+    /**
+     * Displays a image upload field with preview for a settings field
+     *
+     * @param array   $args settings field args
+     */
+    function callback_image_upload( $args ) {
+        
+        $value ='';
+        $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
+        $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
+        $id = $args['section']  . '[' . $args['id'] . ']';
+        $js_id = $args['section']  . '\\\\[' . $args['id'] . '\\\\]';
+        $html = sprintf( '<input type="text" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
+        $html .= '<input type="button" class="button wpsf-browse" id="'. $id .'_button" value="Browse" />
+        <script type="text/javascript">
+        jQuery(document).ready(function($){
+            $("#'. $js_id .'_button").click(function() {
+                tb_show("", "media-upload.php?post_id=0&amp;type=image&amp;TB_iframe=true");
+                window.original_send_to_editor = window.send_to_editor;
+                window.send_to_editor = function(html) {
+                    var url = $(html).attr(\'href\');
+                    if ( !url ) {
+                        url = $(html).attr(\'src\');
+                    };
+                    $("#'. $js_id .'").val(url);
+                    tb_remove();
+                    window.send_to_editor = window.original_send_to_editor;
+                };
+                return false;
+            });
+        });
+        </script>';
+        $html .= sprintf( '<br><span class="description"> %s</span>', $args['desc'] );
+        
+        if($value !='') :
+        	
+        	$html .= '<style type="text/css">.img-preview { max-width: 200px; max-height: 200px; display: block; position: relative; clear: both; margin: 10px 0;}</style>';
+        	$html .= '<img class="img-preview" src="'. $value .'" alt="'.$args['name'].'" />';
+        	
+        endif;
+
+        echo $html;
     }
 
     /**
