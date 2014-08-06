@@ -426,7 +426,7 @@ class WeDevs_Settings_API {
         <div class="metabox-holder">
             <div class="postbox">
                 <?php foreach ( $this->settings_sections as $form ) { ?>
-                    <div id="<?php echo $form['id']; ?>" class="group">
+                    <div id="<?php echo $form['id']; ?>" class="group inside">
                         <form method="post" action="options.php">
 
                             <?php do_action( 'wsa_form_top_' . $form['id'], $form ); ?>
