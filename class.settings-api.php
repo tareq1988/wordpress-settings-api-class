@@ -107,7 +107,11 @@ class WeDevs_Settings_API {
         //register settings sections
         foreach ( $this->settings_sections as $section ) {
             if ( false == get_option( $section['id'] ) ) {
-                add_option( $section['id'] );
+                $defaults = array();
+                foreach ( $this->settings_fields[$section['id']] as $field ) {
+                    $defaults[$field['name']] = isset( $field['default'] ) ? $field['default'] : '';
+                }
+                add_option( $section['id'], $defaults );
             }
 
             if ( isset($section['desc']) && !empty($section['desc']) ) {
