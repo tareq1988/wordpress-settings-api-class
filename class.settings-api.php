@@ -274,7 +274,16 @@ class WeDevs_Settings_API {
 
         echo '<div style="width: ' . $size . ';">';
 
-        wp_editor( $value, $args['section'] . '-' . $args['id'] . '', array( 'teeny' => true, 'textarea_name' => $args['section'] . '[' . $args['id'] . ']', 'textarea_rows' => 10 ) );
+        $editor_settings = array(
+            'teeny' => true,
+            'textarea_name' => $args['section'] . '[' . $args['id'] . ']',
+            'textarea_rows' => 10
+        );
+        if ( isset( $args['options'] ) && is_array( $args['options'] ) ) {
+            $editor_settings = array_merge( $editor_settings, $args['options'] );
+        }
+
+        wp_editor( $value, $args['section'] . '-' . $args['id'], $editor_settings );
 
         echo '</div>';
 
