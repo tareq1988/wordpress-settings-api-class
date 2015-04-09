@@ -135,6 +135,7 @@ class WeDevs_Settings_API {
                     'options' => isset( $option['options'] ) ? $option['options'] : '',
                     'std' => isset( $option['default'] ) ? $option['default'] : '',
                     'sanitize_callback' => isset( $option['sanitize_callback'] ) ? $option['sanitize_callback'] : '',
+                    'type' => $type,
                 );
                 add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array( $this, 'callback_' . $type ), $section, $section, $args );
             }
@@ -155,11 +156,21 @@ class WeDevs_Settings_API {
 
         $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
         $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
+        $type = isset( $args['type'] ) ? $args['type'] : 'text';
 
-        $html = sprintf( '<input type="text" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
+        $html = sprintf( '<input type="%1$s" class="%2$s-text" id="%3$s[%4$s]" name="%3$s[%4$s]" value="%5$s"/>', $type, $size, $args['section'], $args['id'], $value );
         $html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
 
         echo $html;
+    }
+
+    /**
+     * Displays a url field for a settings field
+     *
+     * @param array   $args settings field args
+     */
+    function callback_url( $args ) {
+        $this->callback_text( $args );
     }
 
     /**
