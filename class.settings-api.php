@@ -283,7 +283,7 @@ class WeDevs_Settings_API {
         $value = $this->get_option( $args['id'], $args['section'], $args['std'] );
         $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : '500px';
 
-        echo '<div style="width: ' . $size . ';">';
+        echo '<div style="max-width: ' . $size . ';">';
 
         $editor_settings = array(
             'teeny' => true,
