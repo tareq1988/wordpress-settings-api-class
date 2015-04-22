@@ -107,7 +107,11 @@ class WeDevs_Settings_API {
         //register settings sections
         foreach ( $this->settings_sections as $section ) {
             if ( false == get_option( $section['id'] ) ) {
-                add_option( $section['id'] );
+                $defaults = array();
+                foreach ( $this->settings_fields[$section['id']] as $field ) {
+                    $defaults[$field['name']] = isset( $field['default'] ) ? $field['default'] : '';
+                }
+                add_option( $section['id'], $defaults );
             }
 
             if ( isset($section['desc']) && !empty($section['desc']) ) {
@@ -442,7 +446,7 @@ class WeDevs_Settings_API {
         <div class="metabox-holder">
             <div class="postbox">
                 <?php foreach ( $this->settings_sections as $form ) { ?>
-                    <div id="<?php echo $form['id']; ?>" class="group">
+                    <div id="<?php echo $form['id']; ?>" class="group inside">
                         <form method="post" action="options.php">
 
                             <?php do_action( 'wsa_form_top_' . $form['id'], $form ); ?>
