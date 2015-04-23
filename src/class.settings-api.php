@@ -3,11 +3,11 @@
 /**
  * weDevs Settings API wrapper class
  *
- * @version 1.0
+ * @version 1.1
  *
  * @author Tareq Hasan <tareq@weDevs.com>
  * @link http://tareq.weDevs.com Tareq's Planet
- * @example settings-api.php How to use the class
+ * @example src/settings-api.php How to use the class
  */
 if ( !class_exists( 'WeDevs_Settings_API' ) ):
 class WeDevs_Settings_API {
@@ -170,6 +170,15 @@ class WeDevs_Settings_API {
      * @param array   $args settings field args
      */
     function callback_url( $args ) {
+        $this->callback_text( $args );
+    }
+
+    /**
+     * Displays a url field for a settings field
+     *
+     * @param array   $args settings field args
+     */
+    function callback_number( $args ) {
         $this->callback_text( $args );
     }
 
