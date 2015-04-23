@@ -8,6 +8,22 @@ Usage Example
 
 A nice tutorial is presented can be found [here](http://tareq.wedevs.com/2012/06/wordpress-settings-api-php-class/) about how to use this PHP class
 
+## Package Installation (via Composer)
+
+To install this package, edit your `composer.json` file:
+
+```js
+{
+    "require": {
+        "tareq1988/wordpress-settings-api-class": "dev-master"
+    }
+}
+```
+
+Now run:
+
+`$ composer install`
+
 Frequently Asked Questions
 ---------------
 
