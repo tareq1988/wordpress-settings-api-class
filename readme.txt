@@ -3,8 +3,8 @@ Contributors: tareq1988
 Donate link: http://tareq.wedevs.com/
 Tags: settings, options, admin, class, settings-api
 Requires at least: 3.3
-Tested up to: 3.3.2
-Stable tag: 0.1
+Tested up to: 4.1.2
+Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,6 +51,20 @@ More about [Settings API](http://codex.wordpress.org/Settings_API).
 1. The options panel build on the fly using the PHP Class
 
 == Changelog ==
+
+= v1.1 (23 April, 2015) =
+- [new] Folder structure updated
+- [new] composer support added
+- [new] Number field added
+- [new] URL field added
+- [improved] wysiwyg field responsive support. Allow to pass options to wp_editor
+- [new] WP Media uploader added
+
+= v1.0 (16 July, 2014) =
+- [new] color, password and wysiwyg example added on plugin settings
+- [new] Color Picker added
+- [improved] Allow to set description for section
+- Some other old fixes ;)
 
 = 0.1 =
 * Initial release
