@@ -1,0 +1,22 @@
+{
+    "name": "tareq1988/wordpress-settings-api-class",
+    "type": "library",
+    "description": "WordPress settings API Abstraction Class",
+    "keywords": ["wp","wordpress", "settings-api"],
+    "homepage": "https://github.com/tareq1988/wordpress-settings-api-class",
+    "license": "GPLv2",
+    "authors": [
+        {
+            "name": "Tareq Hasan",
+            "email": "tareq@wedevs.com",
+            "homepage": "http://tareq.wedevs.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.2.4"
+    },
+    "autoload": {
+        "classmap": ["src/"]
+    }
+}
