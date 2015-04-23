@@ -5,7 +5,7 @@
  * Description: WordPress Settings API testing
  * Author: Tareq Hasan
  * Author URI: http://tareq.weDevs.com
- * Version: 0.1
+ * Version: 1.1
  */
 
 require_once dirname( __FILE__ ) . '/src/class.settings-api.php';
