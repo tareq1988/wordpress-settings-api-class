@@ -174,7 +174,7 @@ class WeDevs_Settings_API {
     }
 
     /**
-     * Displays a url field for a settings field
+     * Displays a number field for a settings field
      *
      * @param array   $args settings field args
      */
