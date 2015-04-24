@@ -471,23 +471,21 @@ class WeDevs_Settings_API {
     function show_forms() {
         ?>
         <div class="metabox-holder">
-            <div class="postbox">
-                <?php foreach ( $this->settings_sections as $form ) { ?>
-                    <div id="<?php echo $form['id']; ?>" class="group">
-                        <form method="post" action="options.php">
-
-                            <?php do_action( 'wsa_form_top_' . $form['id'], $form ); ?>
-                            <?php settings_fields( $form['id'] ); ?>
-                            <?php do_settings_sections( $form['id'] ); ?>
-                            <?php do_action( 'wsa_form_bottom_' . $form['id'], $form ); ?>
-
-                            <div style="padding-left: 10px">
-                                <?php submit_button(); ?>
-                            </div>
-                        </form>
-                    </div>
-                <?php } ?>
-            </div>
+			<?php foreach ( $this->settings_sections as $form ) { ?>
+				<div id="<?php echo $form['id']; ?>" class="group">
+					<form method="post" action="options.php">
+						<?php
+						do_action( 'wsa_form_top_' . $form['id'], $form );
+						settings_fields( $form['id'] );
+						do_settings_sections( $form['id'] );
+						do_action( 'wsa_form_bottom_' . $form['id'], $form );
+						?>
+						<div style="padding-left: 10px">
+							<?php submit_button(); ?>
+						</div>
+					</form>
+				</div>
+			<?php } ?>
         </div>
         <?php
         $this->script();
