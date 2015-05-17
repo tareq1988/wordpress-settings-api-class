@@ -130,7 +130,10 @@ class WeDevs_Settings_API_Test {
                     'label'   => __( 'File', 'wedevs' ),
                     'desc'    => __( 'File description', 'wedevs' ),
                     'type'    => 'file',
-                    'default' => ''
+                    'default' => '',
+                    'options' => array(
+                        'button_label' => 'Choose Image'
+                    )
                 )
             ),
             'wedevs_advanced' => array(
