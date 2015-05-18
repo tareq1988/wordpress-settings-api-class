@@ -470,10 +470,10 @@ class WeDevs_Settings_API {
      */
     function show_forms() {
         ?>
-        <form method="post" action="options.php">
-            <div class="metabox-holder">
-                <?php foreach ( $this->settings_sections as $form ): ?>
-                    <div id="<?php echo $form['id']; ?>" class="group">
+        <div class="metabox-holder">
+			<?php foreach ( $this->settings_sections as $form ) { ?>
+				<div id="<?php echo $form['id']; ?>" class="group">
+					<form method="post" action="options.php">
 						<?php
 						do_action( 'wsa_form_top_' . $form['id'], $form );
 						settings_fields( $form['id'] );
@@ -483,10 +483,10 @@ class WeDevs_Settings_API {
 						<div style="padding-left: 10px">
 							<?php submit_button(); ?>
 						</div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        </form>
+					</form>
+				</div>
+			<?php } ?>
+        </div>
         <?php
         $this->script();
     }
