@@ -116,7 +116,7 @@ class WeDevs_Settings_API {
             } else if ( isset( $section['callback'] ) ) {
                 $callback = $section['callback'];
             } else {
-                $callback = '__return_false';
+                $callback = null;
             }
 
             add_settings_section( $section['id'], $section['title'], $callback, $section['id'] );
