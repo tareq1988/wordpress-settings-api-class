@@ -148,6 +148,21 @@ class WeDevs_Settings_API {
     }
 
     /**
+     * Get field description for display
+     *
+     * @param array   $args settings field args
+     */
+    public function get_field_description( $args ) {
+        if ( ! empty( $args['desc'] ) ) {
+            $desc = sprintf( '<p class="description">%s</p>', $args['desc'] );
+        } else {
+            $desc = '';
+        }
+
+        return $desc;
+    }
+
+    /**
      * Displays a text field for a settings field
      *
      * @param array   $args settings field args
@@ -159,7 +174,7 @@ class WeDevs_Settings_API {
         $type = isset( $args['type'] ) ? $args['type'] : 'text';
 
         $html = sprintf( '<input type="%1$s" class="%2$s-text" id="%3$s[%4$s]" name="%3$s[%4$s]" value="%5$s"/>', $type, $size, $args['section'], $args['id'], $value );
-        $html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
+        $html .= $this->get_field_description( $args );
 
         echo $html;
     }
@@ -191,9 +206,12 @@ class WeDevs_Settings_API {
 
         $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
 
-        $html = sprintf( '<input type="hidden" name="%1$s[%2$s]" value="off" />', $args['section'], $args['id'] );
+        $html = '<fieldset>';
+        $html .= sprintf( '<label for="wpuf-%1$s[%2$s]">', $args['section'], $args['id'] );
+        $html .= sprintf( '<input type="hidden" name="%1$s[%2$s]" value="off" />', $args['section'], $args['id'] );
         $html .= sprintf( '<input type="checkbox" class="checkbox" id="wpuf-%1$s[%2$s]" name="%1$s[%2$s]" value="on" %3$s />', $args['section'], $args['id'], checked( $value, 'on', false ) );
-        $html .= sprintf( '<label for="wpuf-%1$s[%2$s]"> %3$s</label>', $args['section'], $args['id'], $args['desc'] );
+        $html .= sprintf( '%1$s</label>', $args['desc'] );
+        $html .= '</fieldset>';
 
         echo $html;
     }
@@ -207,13 +225,15 @@ class WeDevs_Settings_API {
 
         $value = $this->get_option( $args['id'], $args['section'], $args['std'] );
 
-        $html = '';
+        $html = '<fieldset>';
         foreach ( $args['options'] as $key => $label ) {
             $checked = isset( $value[$key] ) ? $value[$key] : '0';
-            $html .= sprintf( '<input type="checkbox" class="checkbox" id="wpuf-%1$s[%2$s][%3$s]" name="%1$s[%2$s][%3$s]" value="%3$s"%4$s />', $args['section'], $args['id'], $key, checked( $checked, $key, false ) );
-            $html .= sprintf( '<label for="wpuf-%1$s[%2$s][%4$s]"> %3$s</label><br>', $args['section'], $args['id'], $label, $key );
+            $html .= sprintf( '<label for="wpuf-%1$s[%2$s][%3$s]">', $args['section'], $args['id'], $key );
+            $html .= sprintf( '<input type="checkbox" class="checkbox" id="wpuf-%1$s[%2$s][%3$s]" name="%1$s[%2$s][%3$s]" value="%3$s" %4$s />', $args['section'], $args['id'], $key, checked( $checked, $key, false ) );
+            $html .= sprintf( '%1$s</label><br>',  $label );
         }
-        $html .= sprintf( '<span class="description"> %s</label>', $args['desc'] );
+        $html .= $this->get_field_description( $args );
+        $html .= '</fieldset>';
 
         echo $html;
     }
@@ -227,12 +247,14 @@ class WeDevs_Settings_API {
 
         $value = $this->get_option( $args['id'], $args['section'], $args['std'] );
 
-        $html = '';
+        $html = '<fieldset>';
         foreach ( $args['options'] as $key => $label ) {
-            $html .= sprintf( '<input type="radio" class="radio" id="wpuf-%1$s[%2$s][%3$s]" name="%1$s[%2$s]" value="%3$s"%4$s />', $args['section'], $args['id'], $key, checked( $value, $key, false ) );
-            $html .= sprintf( '<label for="wpuf-%1$s[%2$s][%4$s]"> %3$s</label><br>', $args['section'], $args['id'], $label, $key );
+            $html .= sprintf( '<label for="wpuf-%1$s[%2$s][%3$s]">',  $args['section'], $args['id'], $key );
+            $html .= sprintf( '<input type="radio" class="radio" id="wpuf-%1$s[%2$s][%3$s]" name="%1$s[%2$s]" value="%3$s" %4$s />', $args['section'], $args['id'], $key, checked( $value, $key, false ) );
+            $html .= sprintf( '%1$s</label><br>', $label );
         }
-        $html .= sprintf( '<span class="description"> %s</label>', $args['desc'] );
+        $html .= $this->get_field_description( $args );
+        $html .= '</fieldset>';
 
         echo $html;
     }
@@ -252,7 +274,7 @@ class WeDevs_Settings_API {
             $html .= sprintf( '<option value="%s"%s>%s</option>', $key, selected( $value, $key, false ), $label );
         }
         $html .= sprintf( '</select>' );
-        $html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
+        $html .= $this->get_field_description( $args );
 
         echo $html;
     }
@@ -268,7 +290,7 @@ class WeDevs_Settings_API {
         $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
 
         $html = sprintf( '<textarea rows="5" cols="55" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]">%4$s</textarea>', $size, $args['section'], $args['id'], $value );
-        $html .= sprintf( '<br><span class="description"> %s</span>', $args['desc'] );
+        $html .= $this->get_field_description( $args );
 
         echo $html;
     }
@@ -277,9 +299,10 @@ class WeDevs_Settings_API {
      * Displays a textarea for a settings field
      *
      * @param array   $args settings field args
+     * @return string
      */
     function callback_html( $args ) {
-        echo $args['desc'];
+        echo $this->get_field_description( $args );
     }
 
     /**
@@ -307,7 +330,7 @@ class WeDevs_Settings_API {
 
         echo '</div>';
 
-        echo sprintf( '<br><span class="description"> %s</span>', $args['desc'] );
+        echo $this->get_field_description( $args );
     }
 
     /**
@@ -323,8 +346,7 @@ class WeDevs_Settings_API {
 
         $html  = sprintf( '<input type="text" class="%1$s-text wpsa-url" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
         $html .= '<input type="button" class="button wpsa-browse" value="'.__( 'Browse' ).'" />';
-
-        $html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
+        $html .= $this->get_field_description( $args );
 
         echo $html;
     }
@@ -340,7 +362,7 @@ class WeDevs_Settings_API {
         $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
 
         $html = sprintf( '<input type="password" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
-        $html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
+        $html .= $this->get_field_description( $args );
 
         echo $html;
     }
@@ -356,7 +378,7 @@ class WeDevs_Settings_API {
         $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
 
         $html = sprintf( '<input type="text" class="%1$s-text wp-color-picker-field" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s" data-default-color="%5$s" />', $size, $args['section'], $args['id'], $value, $args['std'] );
-        $html .= sprintf( '<span class="description" style="display:block;"> %s</span>', $args['desc'] );
+        $html .= $this->get_field_description( $args );
 
         echo $html;
     }
@@ -449,23 +471,21 @@ class WeDevs_Settings_API {
     function show_forms() {
         ?>
         <div class="metabox-holder">
-            <div class="postbox">
-                <?php foreach ( $this->settings_sections as $form ) { ?>
-                    <div id="<?php echo $form['id']; ?>" class="group">
-                        <form method="post" action="options.php">
-
-                            <?php do_action( 'wsa_form_top_' . $form['id'], $form ); ?>
-                            <?php settings_fields( $form['id'] ); ?>
-                            <?php do_settings_sections( $form['id'] ); ?>
-                            <?php do_action( 'wsa_form_bottom_' . $form['id'], $form ); ?>
-
-                            <div style="padding-left: 10px">
-                                <?php submit_button(); ?>
-                            </div>
-                        </form>
-                    </div>
-                <?php } ?>
-            </div>
+			<?php foreach ( $this->settings_sections as $form ) { ?>
+				<div id="<?php echo $form['id']; ?>" class="group">
+					<form method="post" action="options.php">
+						<?php
+						do_action( 'wsa_form_top_' . $form['id'], $form );
+						settings_fields( $form['id'] );
+						do_settings_sections( $form['id'] );
+						do_action( 'wsa_form_bottom_' . $form['id'], $form );
+						?>
+						<div style="padding-left: 10px">
+							<?php submit_button(); ?>
+						</div>
+					</form>
+				</div>
+			<?php } ?>
         </div>
         <?php
         $this->script();
