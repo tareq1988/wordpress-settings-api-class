@@ -130,6 +130,7 @@ class WeDevs_Settings_API {
 
                 $args = array(
                     'id' => $option['name'],
+                    'label_for' => $args['label_for'] = "{$section}[{$option['name']}]",
                     'desc' => isset( $option['desc'] ) ? $option['desc'] : '',
                     'name' => $option['label'],
                     'section' => $section,
@@ -139,6 +140,7 @@ class WeDevs_Settings_API {
                     'sanitize_callback' => isset( $option['sanitize_callback'] ) ? $option['sanitize_callback'] : '',
                     'type' => $type,
                 );
+
                 add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array( $this, 'callback_' . $type ), $section, $section, $args );
             }
         }
