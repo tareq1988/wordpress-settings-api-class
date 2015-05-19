@@ -129,8 +129,11 @@ class WeDevs_Settings_API_Test {
                     'name'    => 'file',
                     'label'   => __( 'File', 'wedevs' ),
                     'desc'    => __( 'File description', 'wedevs' ),
-                    'type'    => 'file',
-                    'default' => ''
+                    'type'    => 'image',
+                    'default' => '',
+                    'options' => array(
+                        'button_label' => 'Choose File'
+                    )
                 )
             ),
             'wedevs_advanced' => array(
@@ -189,7 +192,7 @@ class WeDevs_Settings_API_Test {
                     'name'    => 'file',
                     'label'   => __( 'File', 'wedevs' ),
                     'desc'    => __( 'File description', 'wedevs' ),
-                    'type'    => 'file',
+                    'type'    => 'image',
                     'default' => ''
                 )
             ),
@@ -256,7 +259,7 @@ class WeDevs_Settings_API_Test {
                     'name'    => 'file',
                     'label'   => __( 'File', 'wedevs' ),
                     'desc'    => __( 'File description', 'wedevs' ),
-                    'type'    => 'file',
+                    'type'    => 'image',
                     'default' => ''
                 )
             )

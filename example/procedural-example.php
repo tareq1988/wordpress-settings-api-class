@@ -94,7 +94,7 @@ if ( !function_exists( 'wedevs_admin_init' ) ):
                     'name' => 'file',
                     'label' => __( 'File', 'wedevs' ),
                     'desc' => __( 'File description', 'wedevs' ),
-                    'type' => 'file',
+                    'type' => 'image',
                     'default' => ''
                 ),
                 array(
@@ -170,7 +170,7 @@ if ( !function_exists( 'wedevs_admin_init' ) ):
                     'name' => 'file',
                     'label' => __( 'File', 'wedevs' ),
                     'desc' => __( 'File description', 'wedevs' ),
-                    'type' => 'file',
+                    'type' => 'image',
                     'default' => ''
                 ),
                 array(
@@ -244,7 +244,7 @@ if ( !function_exists( 'wedevs_admin_init' ) ):
                     'name' => 'file',
                     'label' => __( 'File', 'wedevs' ),
                     'desc' => __( 'File description', 'wedevs' ),
-                    'type' => 'file',
+                    'type' => 'image',
                     'default' => ''
                 ),
                 array(

@@ -336,19 +336,24 @@ class WeDevs_Settings_API {
     }
 
     /**
-     * Displays a file upload field for a settings field
+     * Displays an image upload field for a settings field
      *
      * @param array   $args settings field args
      */
-    function callback_file( $args ) {
+    function callback_image( $args ) {
 
         $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
         $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
         $id = $args['section']  . '[' . $args['id'] . ']';
 
+        $label = isset( $args['options']['button_label'] ) ?
+                        $label = $args['options']['button_label'] :
+                        $label = __( 'Choose Image' );
+
         $html  = sprintf( '<input type="text" class="%1$s-text wpsa-url" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
-        $html .= '<input type="button" class="button wpsa-browse" value="'.__( 'Browse' ).'" />';
+        $html .= '<input type="button" class="button wpsa-browse" value="' . $label . '" />';
         $html .= $this->get_field_description( $args );
+        $html .= '<p class="wpsa-image-preview"><img src=""/></p>';
 
         echo $html;
     }
@@ -569,13 +574,18 @@ class WeDevs_Settings_API {
                     file_frame.on('select', function () {
                         attachment = file_frame.state().get('selection').first().toJSON();
 
-                        self.prev('.wpsa-url').val(attachment.url);
+                        self.prev('.wpsa-url').val(attachment.url).change();
                     });
 
                     // Finally, open the modal
                     file_frame.open();
                 });
-        });
+
+                $('input.wpsa-url').on( 'change keyup paste input', (function() {
+                    var self = $(this);
+                    self.next().next().next( '.wpsa-image-preview' ).children( 'img' ).attr( 'src', self.val() );
+                })).change();
+            });
         </script>
 
         <style type="text/css">
