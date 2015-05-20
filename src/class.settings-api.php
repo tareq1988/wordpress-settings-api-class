@@ -550,20 +550,13 @@ class WeDevs_Settings_API {
                     evt.preventDefault();
                 });
 
-                var file_frame = null;
                 $('.wpsa-browse').on('click', function (event) {
                     event.preventDefault();
 
                     var self = $(this);
 
-                    // If the media frame already exists, reopen it.
-                    if ( file_frame ) {
-                        file_frame.open();
-                        return false;
-                    }
-
                     // Create the media frame.
-                    file_frame = wp.media.frames.file_frame = wp.media({
+                    var file_frame = wp.media.frames.file_frame = wp.media({
                         title: self.data('uploader_title'),
                         button: {
                             text: self.data('uploader_button_text'),
