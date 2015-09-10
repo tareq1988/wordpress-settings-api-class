@@ -394,15 +394,18 @@ class WeDevs_Settings_API {
      * Sanitize callback for Settings API
      */
     function sanitize_options( $options ) {
-        foreach( $options as $option_slug => $option_value ) {
-            $sanitize_callback = $this->get_sanitize_callback( $option_slug );
+        if ( !is_null($options) ) {
+            foreach( $options as $option_slug => $option_value ) {
+                $sanitize_callback = $this->get_sanitize_callback( $option_slug );
 
-            // If callback is set, call it
-            if ( $sanitize_callback ) {
-                $options[ $option_slug ] = call_user_func( $sanitize_callback, $option_value );
-                continue;
+                // If callback is set, call it
+                if ( $sanitize_callback ) {
+                    $options[ $option_slug ] = call_user_func( $sanitize_callback, $option_value );
+                    continue;
+                }
             }
         }
+
 
         return $options;
     }
