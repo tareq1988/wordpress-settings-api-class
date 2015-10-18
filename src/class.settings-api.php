@@ -3,7 +3,7 @@
 /**
  * weDevs Settings API wrapper class
  *
- * @version 1.1
+ * @version 1.2 (18-Oct-2015)
  *
  * @author Tareq Hasan <tareq@weDevs.com>
  * @link http://tareq.weDevs.com Tareq's Planet
