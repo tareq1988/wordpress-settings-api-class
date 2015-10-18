@@ -17,21 +17,14 @@ class WeDevs_Settings_API {
      *
      * @var array
      */
-    private $settings_sections = array();
+    protected $settings_sections = array();
 
     /**
      * Settings fields array
      *
      * @var array
      */
-    private $settings_fields = array();
-
-    /**
-     * Singleton instance
-     *
-     * @var object
-     */
-    private static $_instance;
+    protected $settings_fields = array();
 
     public function __construct() {
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
