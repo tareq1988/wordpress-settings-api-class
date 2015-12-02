@@ -9,7 +9,7 @@
  * @link http://tareq.weDevs.com Tareq's Planet
  * @example src/settings-api.php How to use the class
  */
-if ( !class_exists( 'WeDevs_Settings_API' ) ):
+if ( class_exists( 'WeDevs_Settings_API' ) ) return;
 class WeDevs_Settings_API {
 
     /**
@@ -580,4 +580,3 @@ class WeDevs_Settings_API {
     }
 
 }
-endif;
