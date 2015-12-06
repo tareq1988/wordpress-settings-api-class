@@ -9,7 +9,7 @@
  * @link http://tareq.weDevs.com Tareq's Planet
  * @example src/settings-api.php How to use the class
  */
-if ( !class_exists( 'WeDevs_Settings_API' ) ):
+if ( class_exists( 'WeDevs_Settings_API' ) ) return;
 class WeDevs_Settings_API {
 
     /**
@@ -132,6 +132,7 @@ class WeDevs_Settings_API {
                     'std'               => isset( $option['default'] ) ? $option['default'] : '',
                     'sanitize_callback' => isset( $option['sanitize_callback'] ) ? $option['sanitize_callback'] : '',
                     'type'              => $type,
+                    'placeholder'              => isset( $option['placeholder'] ) ? $option['placeholder'] : '',
                 );
 
                 add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array( $this, 'callback_' . $type ), $section, $section, $args );
@@ -169,8 +170,9 @@ class WeDevs_Settings_API {
         $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
         $size  = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
         $type  = isset( $args['type'] ) ? $args['type'] : 'text';
+        $placeholder = empty( $args['placeholder'] ) ? '' : ' placeholder="'.$args['placeholder'].'"';
 
-        $html  = sprintf( '<input type="%1$s" class="%2$s-text" id="%3$s[%4$s]" name="%3$s[%4$s]" value="%5$s"/>', $type, $size, $args['section'], $args['id'], $value );
+        $html  = sprintf( '<input type="%1$s" class="%2$s-text" id="%3$s[%4$s]" name="%3$s[%4$s]" value="%5$s"%6$s/>', $type, $size, $args['section'], $args['id'], $value, $placeholder );
         $html  .= $this->get_field_description( $args );
 
         echo $html;
@@ -289,7 +291,9 @@ class WeDevs_Settings_API {
         $value = esc_textarea( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
         $size  = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
 
-        $html  = sprintf( '<textarea rows="5" cols="55" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]">%4$s</textarea>', $size, $args['section'], $args['id'], $value );
+        $placeholder = empty( $args['placeholder'] ) ? '' : ' placeholder="'.$args['placeholder'].'"';
+
+        $html  = sprintf( '<textarea rows="5" cols="55" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]"%4$s>%5$s</textarea>', $size, $args['section'], $args['id'], $placeholder, $value );
         $html  .= $this->get_field_description( $args );
 
         echo $html;
@@ -580,4 +584,3 @@ class WeDevs_Settings_API {
     }
 
 }
-endif;

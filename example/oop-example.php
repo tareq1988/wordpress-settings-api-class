@@ -5,19 +5,28 @@
  *
  * @author Tareq Hasan
  */
-if ( !class_exists('WeDevs_Settings_API_Test' ) ):
-class WeDevs_Settings_API_Test {
+if ( class_exists('WeDevs_Settings_API_Test' ) ) return;
 
+class WeDevs_Settings_API_Test {
+    
+    private static $instance = null;
     private $settings_api;
 
-    function __construct() {
+    private function __construct() {
         $this->settings_api = new WeDevs_Settings_API;
 
         add_action( 'admin_init', array($this, 'admin_init') );
         add_action( 'admin_menu', array($this, 'admin_menu') );
     }
 
-    function admin_init() {
+    public static function instance() {
+        if ( null == self::$instance ) {
+            self::$instance = new self;
+        }
+        return self::$instance;
+    }
+
+    public function admin_init() {
 
         //set the settings
         $this->settings_api->set_sections( $this->get_settings_sections() );
@@ -27,11 +36,11 @@ class WeDevs_Settings_API_Test {
         $this->settings_api->admin_init();
     }
 
-    function admin_menu() {
+    public function admin_menu() {
         add_options_page( 'Settings API', 'Settings API', 'delete_posts', 'settings_api_test', array($this, 'plugin_page') );
     }
 
-    function get_settings_sections() {
+    public function get_settings_sections() {
         $sections = array(
             array(
                 'id' => 'wedevs_basics',
@@ -54,7 +63,7 @@ class WeDevs_Settings_API_Test {
      *
      * @return array settings fields
      */
-    function get_settings_fields() {
+    public function get_settings_fields() {
         $settings_fields = array(
             'wedevs_basics' => array(
                 array(
@@ -268,7 +277,7 @@ class WeDevs_Settings_API_Test {
         return $settings_fields;
     }
 
-    function plugin_page() {
+    public function plugin_page() {
         echo '<div class="wrap">';
 
         $this->settings_api->show_navigation();
@@ -282,7 +291,7 @@ class WeDevs_Settings_API_Test {
      *
      * @return array page names with key value pairs
      */
-    function get_pages() {
+    public function get_pages() {
         $pages = get_pages();
         $pages_options = array();
         if ( $pages ) {
@@ -295,4 +304,3 @@ class WeDevs_Settings_API_Test {
     }
 
 }
-endif;
