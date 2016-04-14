@@ -296,3 +296,5 @@ class WeDevs_Settings_API_Test {
 
 }
 endif;
+
+$settings = new WeDevs_Settings_API_Test();
