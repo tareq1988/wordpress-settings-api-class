@@ -404,8 +404,15 @@ class WeDevs_Settings_API {
 
     /**
      * Sanitize callback for Settings API
+     *
+     * @return mixed
      */
     function sanitize_options( $options ) {
+
+        if ( !$options ) {
+            return $options;
+        }
+
         foreach( $options as $option_slug => $option_value ) {
             $sanitize_callback = $this->get_sanitize_callback( $option_slug );
 
