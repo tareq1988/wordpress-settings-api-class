@@ -594,8 +594,7 @@ class WeDevs_Settings_API {
 
                     file_frame.on('select', function () {
                         attachment = file_frame.state().get('selection').first().toJSON();
-
-                        self.prev('.wpsa-url').val(attachment.url);
+                        self.prev('.wpsa-url').val(attachment.url).change();
                     });
 
                     // Finally, open the modal
