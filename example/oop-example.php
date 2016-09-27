@@ -57,23 +57,29 @@ class WeDevs_Settings_API_Test {
                     'name'              => 'text_val',
                     'label'             => __( 'Text Input', 'wedevs' ),
                     'desc'              => __( 'Text input description', 'wedevs' ),
+                    'placeholder'       => __( 'Text Input placeholder', 'wedevs' ),
                     'type'              => 'text',
                     'default'           => 'Title',
-                    'sanitize_callback' => 'intval'
+                    'sanitize_callback' => 'sanitize_text_field'
                 ),
                 array(
                     'name'              => 'number_input',
                     'label'             => __( 'Number Input', 'wedevs' ),
-                    'desc'              => __( 'Number field with validation callback `intval`', 'wedevs' ),
+                    'desc'              => __( 'Number field with validation callback `floatval`', 'wedevs' ),
+                    'placeholder'       => __( '1.99', 'wedevs' ),
+                    'min'               => 0,
+                    'max'               => 100,
+                    'step'              => '0.01',
                     'type'              => 'number',
                     'default'           => 'Title',
-                    'sanitize_callback' => 'intval'
+                    'sanitize_callback' => 'floatval'
                 ),
                 array(
-                    'name'  => 'textarea',
-                    'label' => __( 'Textarea Input', 'wedevs' ),
-                    'desc'  => __( 'Textarea description', 'wedevs' ),
-                    'type'  => 'textarea'
+                    'name'        => 'textarea',
+                    'label'       => __( 'Textarea Input', 'wedevs' ),
+                    'desc'        => __( 'Textarea description', 'wedevs' ),
+                    'placeholder' => __( 'Textarea placeholder', 'wedevs' ),
+                    'type'        => 'textarea'
                 ),
                 array(
                     'name'  => 'checkbox',
