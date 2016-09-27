@@ -603,13 +603,22 @@ class WeDevs_Settings_API {
                 });
         });
         </script>
+        <?php
+        $this->_style_fix();
+    }
 
+    function _style_fix() {
+        global $wp_version;
+
+        if (version_compare($wp_version, '3.8', '<=')):
+        ?>
         <style type="text/css">
             /** WordPress 3.8 Fix **/
             .form-table th { padding: 20px 10px; }
             #wpbody-content .metabox-holder { padding-top: 5px; }
         </style>
         <?php
+        endif;
     }
 
 }
