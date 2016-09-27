@@ -3,11 +3,11 @@
 /**
  * weDevs Settings API wrapper class
  *
- * @version 1.2 (18-Oct-2015)
+ * @version 1.3 (27-Sep-2016)
  *
  * @author Tareq Hasan <tareq@weDevs.com>
- * @link http://tareq.weDevs.com Tareq's Planet
- * @example src/settings-api.php How to use the class
+ * @link https://tareq.co Tareq Hasan
+ * @example example/oop-example.php How to use the class
  */
 if ( !class_exists( 'WeDevs_Settings_API' ) ):
 class WeDevs_Settings_API {
@@ -480,6 +480,13 @@ class WeDevs_Settings_API {
     function show_navigation() {
         $html = '<h2 class="nav-tab-wrapper">';
 
+        $count = count( $this->settings_sections );
+
+        // don't show the navigation if only one section exists
+        if ( $count === 1 ) {
+            return;
+        }
+
         foreach ( $this->settings_sections as $tab ) {
             $html .= sprintf( '<a href="#%1$s" class="nav-tab" id="%1$s-tab">%2$s</a>', $tab['id'], $tab['title'] );
         }
@@ -606,4 +613,5 @@ class WeDevs_Settings_API {
     }
 
 }
+
 endif;
