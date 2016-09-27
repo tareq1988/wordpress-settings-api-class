@@ -82,6 +82,11 @@ class WeDevs_Settings_API_Test {
                     'type'        => 'textarea'
                 ),
                 array(
+                    'name'        => 'html',
+                    'desc'        => __( 'HTML area description. You can use any <strong>bold</strong> or other HTML elements.', 'wedevs' ),
+                    'type'        => 'html'
+                ),
+                array(
                     'name'  => 'checkbox',
                     'label' => __( 'Checkbox', 'wedevs' ),
                     'desc'  => __( 'Checkbox Label', 'wedevs' ),

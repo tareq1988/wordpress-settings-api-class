@@ -50,6 +50,13 @@ More about [Settings API](http://codex.wordpress.org/Settings_API).
 Changelog:
 ----------------------
 ```
+v1.3 (27 September, 2016)
+------------------------
+- [new] Placeholder support for text and textarea input
+- [new] min, max and step support for number field
+- [fix] Empty multicheck saving warning
+- [improved] Don't show the navigation if only one section exists
+
 v1.1 (23 April, 2015)
 ------------------------
 - [new] Folder structure updated
