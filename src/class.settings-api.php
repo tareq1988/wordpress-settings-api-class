@@ -406,6 +406,7 @@ class WeDevs_Settings_API {
      * Sanitize callback for Settings API
      */
     function sanitize_options( $options ) {
+    	if(!is_array($options)){return $options;}
         foreach( $options as $option_slug => $option_value ) {
             $sanitize_callback = $this->get_sanitize_callback( $option_slug );
 
