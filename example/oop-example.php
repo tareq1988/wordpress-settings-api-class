@@ -34,16 +34,12 @@ class WeDevs_Settings_API_Test {
     function get_settings_sections() {
         $sections = array(
             array(
-                'id' => 'wedevs_basics',
+                'id'    => 'wedevs_basics',
                 'title' => __( 'Basic Settings', 'wedevs' )
             ),
             array(
-                'id' => 'wedevs_advanced',
+                'id'    => 'wedevs_advanced',
                 'title' => __( 'Advanced Settings', 'wedevs' )
-            ),
-            array(
-                'id' => 'wedevs_others',
-                'title' => __( 'Other Settings', 'wpuf' )
             )
         );
         return $sections;
@@ -93,18 +89,6 @@ class WeDevs_Settings_API_Test {
                     'options' => array(
                         'yes' => 'Yes',
                         'no'  => 'No'
-                    )
-                ),
-                array(
-                    'name'    => 'multicheck',
-                    'label'   => __( 'Multile checkbox', 'wedevs' ),
-                    'desc'    => __( 'Multi checkbox description', 'wedevs' ),
-                    'type'    => 'multicheck',
-                    'options' => array(
-                        'one'   => 'One',
-                        'two'   => 'Two',
-                        'three' => 'Three',
-                        'four'  => 'Four'
                     )
                 ),
                 array(
@@ -171,97 +155,6 @@ class WeDevs_Settings_API_Test {
                         'four'  => 'Four'
                     )
                 ),
-                array(
-                    'name'    => 'selectbox',
-                    'label'   => __( 'A Dropdown', 'wedevs' ),
-                    'desc'    => __( 'Dropdown description', 'wedevs' ),
-                    'type'    => 'select',
-                    'options' => array(
-                        'yes' => 'Yes',
-                        'no'  => 'No'
-                    )
-                ),
-                array(
-                    'name'    => 'password',
-                    'label'   => __( 'Password', 'wedevs' ),
-                    'desc'    => __( 'Password description', 'wedevs' ),
-                    'type'    => 'password',
-                    'default' => ''
-                ),
-                array(
-                    'name'    => 'file',
-                    'label'   => __( 'File', 'wedevs' ),
-                    'desc'    => __( 'File description', 'wedevs' ),
-                    'type'    => 'file',
-                    'default' => ''
-                )
-            ),
-            'wedevs_others' => array(
-                array(
-                    'name'    => 'text',
-                    'label'   => __( 'Text Input', 'wedevs' ),
-                    'desc'    => __( 'Text input description', 'wedevs' ),
-                    'type'    => 'text',
-                    'default' => 'Title'
-                ),
-                array(
-                    'name'  => 'textarea',
-                    'label' => __( 'Textarea Input', 'wedevs' ),
-                    'desc'  => __( 'Textarea description', 'wedevs' ),
-                    'type'  => 'textarea'
-                ),
-                array(
-                    'name'  => 'checkbox',
-                    'label' => __( 'Checkbox', 'wedevs' ),
-                    'desc'  => __( 'Checkbox Label', 'wedevs' ),
-                    'type'  => 'checkbox'
-                ),
-                array(
-                    'name'    => 'radio',
-                    'label'   => __( 'Radio Button', 'wedevs' ),
-                    'desc'    => __( 'A radio button', 'wedevs' ),
-                    'type'    => 'radio',
-                    'options' => array(
-                        'yes' => 'Yes',
-                        'no'  => 'No'
-                    )
-                ),
-                array(
-                    'name'    => 'multicheck',
-                    'label'   => __( 'Multile checkbox', 'wedevs' ),
-                    'desc'    => __( 'Multi checkbox description', 'wedevs' ),
-                    'type'    => 'multicheck',
-                    'options' => array(
-                        'one'   => 'One',
-                        'two'   => 'Two',
-                        'three' => 'Three',
-                        'four'  => 'Four'
-                    )
-                ),
-                array(
-                    'name'    => 'selectbox',
-                    'label'   => __( 'A Dropdown', 'wedevs' ),
-                    'desc'    => __( 'Dropdown description', 'wedevs' ),
-                    'type'    => 'select',
-                    'options' => array(
-                        'yes' => 'Yes',
-                        'no'  => 'No'
-                    )
-                ),
-                array(
-                    'name'    => 'password',
-                    'label'   => __( 'Password', 'wedevs' ),
-                    'desc'    => __( 'Password description', 'wedevs' ),
-                    'type'    => 'password',
-                    'default' => ''
-                ),
-                array(
-                    'name'    => 'file',
-                    'label'   => __( 'File', 'wedevs' ),
-                    'desc'    => __( 'File description', 'wedevs' ),
-                    'type'    => 'file',
-                    'default' => ''
-                )
             )
         );
 
