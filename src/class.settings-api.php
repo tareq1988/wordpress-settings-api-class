@@ -138,7 +138,7 @@ class WeDevs_Settings_API {
                     'step'              => isset( $option['step'] ) ? $option['step'] : '',
                 );
 
-                add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array( $this, 'callback_' . $type ), $section, $section, $args );
+                add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], (isset($option['callback']) ? $option['callback'] : array($this, 'callback_' . $type )), $section, $section, $args );
             }
         }
 
