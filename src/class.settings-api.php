@@ -119,13 +119,16 @@ class WeDevs_Settings_API {
         foreach ( $this->settings_fields as $section => $field ) {
             foreach ( $field as $option ) {
 
+                $name = $option['name'];
                 $type = isset( $option['type'] ) ? $option['type'] : 'text';
+                $label = isset( $option['label'] ) ? $option['label'] : '';
+                $callback = isset( $option['callback'] ) ? $option['callback'] : array( $this, 'callback_' . $type );
 
                 $args = array(
-                    'id'                => $option['name'],
-                    'label_for'         => $args['label_for'] = "{$section}[{$option['name']}]",
+                    'id'                => $name,
+                    'label_for'         => $args['label_for'] = "{$section}[{$name}]",
                     'desc'              => isset( $option['desc'] ) ? $option['desc'] : '',
-                    'name'              => $option['label'],
+                    'name'              => $label,
                     'section'           => $section,
                     'size'              => isset( $option['size'] ) ? $option['size'] : null,
                     'options'           => isset( $option['options'] ) ? $option['options'] : '',
@@ -138,7 +141,7 @@ class WeDevs_Settings_API {
                     'step'              => isset( $option['step'] ) ? $option['step'] : '',
                 );
 
-                add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], (isset($option['callback']) ? $option['callback'] : array($this, 'callback_' . $type )), $section, $section, $args );
+                add_settings_field( "{$section}[{$name}]", $label, $callback, $section, $section, $args );
             }
         }
 
@@ -594,8 +597,7 @@ class WeDevs_Settings_API {
 
                     file_frame.on('select', function () {
                         attachment = file_frame.state().get('selection').first().toJSON();
-
-                        self.prev('.wpsa-url').val(attachment.url);
+                        self.prev('.wpsa-url').val(attachment.url).change();
                     });
 
                     // Finally, open the modal
@@ -603,13 +605,22 @@ class WeDevs_Settings_API {
                 });
         });
         </script>
+        <?php
+        $this->_style_fix();
+    }
 
+    function _style_fix() {
+        global $wp_version;
+
+        if (version_compare($wp_version, '3.8', '<=')):
+        ?>
         <style type="text/css">
             /** WordPress 3.8 Fix **/
             .form-table th { padding: 20px 10px; }
             #wpbody-content .metabox-holder { padding-top: 5px; }
         </style>
         <?php
+        endif;
     }
 
 }
