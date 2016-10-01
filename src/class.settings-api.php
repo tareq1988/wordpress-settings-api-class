@@ -120,13 +120,12 @@ class WeDevs_Settings_API {
             foreach ( $field as $option ) {
 
                 $type = isset( $option['type'] ) ? $option['type'] : 'text';
-                $label = isset( $option['label'] ) ? $option['label'] : '';
 
                 $args = array(
                     'id'                => $option['name'],
                     'label_for'         => $args['label_for'] = "{$section}[{$option['name']}]",
                     'desc'              => isset( $option['desc'] ) ? $option['desc'] : '',
-                    'name'              => $label,
+                    'name'              => $option['label'],
                     'section'           => $section,
                     'size'              => isset( $option['size'] ) ? $option['size'] : null,
                     'options'           => isset( $option['options'] ) ? $option['options'] : '',
@@ -139,7 +138,7 @@ class WeDevs_Settings_API {
                     'step'              => isset( $option['step'] ) ? $option['step'] : '',
                 );
 
-                add_settings_field( $section . '[' . $option['name'] . ']', $label, (isset($option['callback']) ? $option['callback'] : array($this, 'callback_' . $type )), $section, $section, $args );
+                add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], (isset($option['callback']) ? $option['callback'] : array($this, 'callback_' . $type )), $section, $section, $args );
             }
         }
 
