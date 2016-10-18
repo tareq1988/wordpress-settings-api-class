@@ -26,6 +26,12 @@ class WeDevs_Settings_API {
      */
     protected $settings_fields = array();
 
+    /**
+     * Tracks whether the repeatable JS has been loaded to prevent multiple calls enqueue_script
+     * @var bool
+     */
+    protected $repeatable_loaded = false;
+
     public function __construct() {
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
     }
@@ -132,6 +138,7 @@ class WeDevs_Settings_API {
                     'std'               => isset( $option['default'] ) ? $option['default'] : '',
                     'sanitize_callback' => isset( $option['sanitize_callback'] ) ? $option['sanitize_callback'] : '',
                     'type'              => $type,
+                    'children'          => isset( $option['children'] ) ? $option['children'] : null,
                 );
 
                 add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array( $this, 'callback_' . $type ), $section, $section, $args );
@@ -383,6 +390,70 @@ class WeDevs_Settings_API {
         $html  .= $this->get_field_description( $args );
 
         echo $html;
+    }
+
+
+    /**
+     * Displays a repeatable for a settings field.
+     *
+     * @param array   $args settings field args
+     */
+    function callback_repeatable( $args ) {
+
+        if (!$this->repeatable_loaded) {
+            $url = plugins_url("js/jquery.repeatable.js",__FILE__);
+            wp_enqueue_script("jquery.repeatable",  $url, array("jquery"));
+        }
+
+        // Add the repeatable
+        $ex_data = json_decode($this->get_option( $args['id'], $args['section'], $args['std']), true);
+        $html = '<div class="repeatable-container">';
+        
+        foreach ($args['children'] as $child) {
+            $html .= '<label for="'.$child['name'].'_{?}">'.$child['label'].'</label>';
+            $html .= '<input type="text" name="'.$child['name'].'_{?}" value="" id="'.$child['name'].'_{?}" data-parent="'.$args['id'].'" data-child="'.$child['name'].'"/>';
+        }
+        $html .= '<input type="button" class="delete" value="X" />';
+        $html .= '</div><input type="button" value="Add" class="add" />';
+        $html .= '<input type="hidden" name="'.$args["section"].'['.$args['id'].']" id="'.$args['section'].'_'.$args["id"].'"/>';
+        echo $html;
+
+        // Add the field group template
+        $template = '<script type="text/template" id="'.$args["id"].'-template"><div class="field-group">';
+
+        foreach ($args['children'] as $child) {
+            $template .= '<label for="'.$child['name'].'_{?}">'.$child['label'].'</label>';
+            $template .= '<input type="text" name="'.$child['name'].'_{?}" value="" id="'.$child['name'].'_{?}" data-parent="'.$args['id'].'" data-child="'.$child['name'].'"/>';
+
+        }
+        $template .= '<input type="button" class="delete" value="X" />';
+        $template .= '</div></script>';
+
+        echo $template;
+
+        // Push in the JS to make the repeatable go.
+        echo '<script>jQuery(function($) {$(".repeatable-container").repeatable({template: "#'.$args['id'].'-template"});});</script>';
+
+        // On save grab all the values and insert them into the hidden field --  -- this needs to be improved
+        ?>
+            <script>
+	            jQuery("form").on("submit", function () {
+		            var data = {};
+		            <?php foreach ($args["children"] as $child):?>
+                        data['<?php echo $child['name'];?>'] = [];
+		                jQuery("[data-child=<?php echo $child['name'];?>").each(function(idx,el){
+		                	console.log(el);
+		                	data['<?php echo $child["name"];?>'].push(jQuery(el).val());
+		                });
+		            <?php endforeach;?>
+
+                    console.log(JSON.stringify(data));
+
+                    jQuery("#<?php echo $args["section"];?>_<?php echo $args['id'];?>").val(JSON.stringify(data));
+	            });
+            </script>
+        <?
+
     }
 
     /**
