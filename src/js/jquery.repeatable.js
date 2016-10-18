@@ -1,4 +1,5 @@
 /*-------------------------------------------
+ * This is basically just a cut and paste of the below
  * https://github.com/jenwachter/jquery.repeatable
  *------------------------------------------*/
 

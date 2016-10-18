@@ -407,13 +407,23 @@ class WeDevs_Settings_API {
 
         // Add the repeatable
         $ex_data = json_decode($this->get_option( $args['id'], $args['section'], $args['std']), true);
+        $ex_keys = array_keys($ex_data);
+
         $html = '<div class="repeatable-container">';
-        
-        foreach ($args['children'] as $child) {
-            $html .= '<label for="'.$child['name'].'_{?}">'.$child['label'].'</label>';
-            $html .= '<input type="text" name="'.$child['name'].'_{?}" value="" id="'.$child['name'].'_{?}" data-parent="'.$args['id'].'" data-child="'.$child['name'].'"/>';
+
+        if (count($ex_keys) > 0) {
+            foreach ($ex_data[$ex_keys[0]] as $i=>$v) {
+                $html .= '<div class="field-group">';
+                foreach ($args['children'] as $child) {
+                    $html .= '<label for="'.$child['name'].'_{?}">'.$child['label'].'</label>';
+                    $html .= '<input type="text" name="'.$child['name'].'_{?}" value="'.$ex_data[$child['name']][$i].'" id="'.$child['name'].'_{?}" data-parent="'.$args['id'].'" data-child="'.$child['name'].'"/>';
+                }
+                $html .= '<input type="button" class="delete" value="X" />';
+                $html .= '</div>';
+            }
         }
-        $html .= '<input type="button" class="delete" value="X" />';
+        echo "ERIC YOU NEED TO WRITE A DELETE CALL BACK";
+
         $html .= '</div><input type="button" value="Add" class="add" />';
         $html .= '<input type="hidden" name="'.$args["section"].'['.$args['id'].']" id="'.$args['section'].'_'.$args["id"].'"/>';
         echo $html;
