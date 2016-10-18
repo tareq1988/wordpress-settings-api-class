@@ -394,7 +394,7 @@ class WeDevs_Settings_API {
 
 
     /**
-     * Displays a repeatable for a settings field.
+     * Displays a repeatable for a settings field.  Sanitization, is applied to the final field.
      *
      * @param array   $args settings field args
      */
@@ -416,13 +416,12 @@ class WeDevs_Settings_API {
                 $html .= '<div class="field-group">';
                 foreach ($args['children'] as $child) {
                     $html .= '<label for="'.$child['name'].'_{?}">'.$child['label'].'</label>';
-                    $html .= '<input type="text" name="'.$child['name'].'_{?}" value="'.$ex_data[$child['name']][$i].'" id="'.$child['name'].'_{?}" data-parent="'.$args['id'].'" data-child="'.$child['name'].'"/>';
+                    $html .= '<input type="text" name="'.$child['name'].'_ex'.$i.'" value="'.$ex_data[$child['name']][$i].'" id="'.$child['name'].'_ex'.$i.'" data-parent="'.$args['id'].'" data-child="'.$child['name'].'"/>';
                 }
                 $html .= '<input type="button" class="delete" value="X" />';
                 $html .= '</div>';
             }
         }
-        echo "ERIC YOU NEED TO WRITE A DELETE CALL BACK";
 
         $html .= '</div><input type="button" value="Add" class="add" />';
         $html .= '<input type="hidden" name="'.$args["section"].'['.$args['id'].']" id="'.$args['section'].'_'.$args["id"].'"/>';
@@ -456,9 +455,7 @@ class WeDevs_Settings_API {
 		                	data['<?php echo $child["name"];?>'].push(jQuery(el).val());
 		                });
 		            <?php endforeach;?>
-
-                    console.log(JSON.stringify(data));
-
+                    
                     jQuery("#<?php echo $args["section"];?>_<?php echo $args['id'];?>").val(JSON.stringify(data));
 	            });
             </script>
