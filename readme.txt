@@ -3,7 +3,7 @@ Contributors: tareq1988
 Donate link: http://tareq.wedevs.com/
 Tags: settings, options, admin, class, settings-api
 Requires at least: 3.3
-Tested up to: 4.1.2
+Tested up to: 4.6.1
 Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
