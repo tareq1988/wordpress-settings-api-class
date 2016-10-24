@@ -1,10 +1,10 @@
 === Settings API ===
 Contributors: tareq1988
-Donate link: http://tareq.wedevs.com/
+Donate link: https://tareq.co/
 Tags: settings, options, admin, class, settings-api
 Requires at least: 3.3
 Tested up to: 4.6.1
-Stable tag: 1.1
+Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,7 +24,7 @@ Visit the [Github](https://github.com/tareq1988/wordpress-settings-api-class) fo
 
 = Usage Example =
 
-A nice tutorial is presented can be found [here](http://tareq.wedevs.com/2012/06/wordpress-settings-api-php-class/) about how to use this PHP class
+A nice tutorial is presented can be found [here](https://tareq.co/2012/06/wordpress-settings-api-php-class/) about how to use this PHP class
 
 == Installation ==
 
@@ -52,7 +52,15 @@ More about [Settings API](http://codex.wordpress.org/Settings_API).
 
 == Changelog ==
 
+= v1.3 (27 September, 2016) =
+
+- [new] Placeholder support for text and textarea input
+- [new] min, max and step support for number field
+- [fix] Empty multicheck saving warning
+- [improved] Don't show the navigation if only one section exists
+
 = v1.1 (23 April, 2015) =
+
 - [new] Folder structure updated
 - [new] composer support added
 - [new] Number field added
@@ -65,6 +73,7 @@ More about [Settings API](http://codex.wordpress.org/Settings_API).
 - [new] Color Picker added
 - [improved] Allow to set description for section
 - Some other old fixes ;)
+
 
 = 0.1 =
 * Initial release
