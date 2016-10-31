@@ -6,7 +6,7 @@ It's a PHP class wrapper for handling WordPress [Settings API](http://codex.word
 Usage Example
 ---------------
 
-A nice tutorial is presented can be found [here](http://tareq.wedevs.com/2012/06/wordpress-settings-api-php-class/) about how to use this PHP class
+A nice tutorial is presented can be found [here](https://tareq.co/2012/06/wordpress-settings-api-php-class/) about how to use this PHP class
 
 ## Package Installation (via Composer)
 
@@ -24,11 +24,36 @@ Now run:
 
 `$ composer install`
 
+#### Retrieving saved options
+
+```php
+/**
+ * Get the value of a settings field
+ *
+ * @param string $option settings field name
+ * @param string $section the section name this field belongs to
+ * @param string $default default text if it's not found
+ *
+ * @return mixed
+ */
+function prefix_get_option( $option, $section, $default = '' ) {
+
+    $options = get_option( $section );
+
+    if ( isset( $options[$option] ) ) {
+        return $options[$option];
+    }
+
+    return $default;
+}
+```
 
 Screenshot
 ----------------------
 
 ![Option Panel](https://github.com/tareq1988/wordpress-settings-api-class/raw/master/screenshot-1.png "The options panel build on the fly using the PHP Class")
+
+
 
 Frequently Asked Questions
 ---------------
