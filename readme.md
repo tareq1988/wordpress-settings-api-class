@@ -3,10 +3,6 @@ What is this?
 
 It's a PHP class wrapper for handling WordPress [Settings API](http://codex.wordpress.org/Settings_API). Gives a very handy way to build theme or plugins option panel.
 
-Usage Example
----------------
-
-A nice tutorial is presented can be found [here](https://tareq.co/2012/06/wordpress-settings-api-php-class/) about how to use this PHP class
 
 ## Package Installation (via Composer)
 
@@ -23,6 +19,13 @@ To install this package, edit your `composer.json` file:
 Now run:
 
 `$ composer install`
+
+Usage Example
+---------------
+
+Checkout the [examples](https://github.com/tareq1988/wordpress-settings-api-class/tree/master/example) folder for OOP and procedural example. They were called in [plugin.php](https://github.com/tareq1988/wordpress-settings-api-class/blob/master/plugin.php) file.
+
+A detailed tutorial can be found [here](https://tareq.co/2012/06/wordpress-settings-api-php-class/).
 
 #### Retrieving saved options
 
