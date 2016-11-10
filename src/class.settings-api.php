@@ -406,6 +406,24 @@ class WeDevs_Settings_API {
         echo $html;
     }
 
+
+    /**
+     * Displays a select box for creating the pages select box
+     *
+     * @param array   $args settings field args
+     */
+    function callback_pages( $args ) {
+
+        $dropdown_args = array(
+            'selected' => esc_attr($this->get_option($args['id'], $args['section'], $args['std'] ) ),
+            'name'     => $args['section'] . '[' . $args['id'] . ']',
+            'id'       => $args['section'] . '[' . $args['id'] . ']',
+            'echo'     => 0
+        );
+        $html = wp_dropdown_pages( $dropdown_args );
+        echo $html;
+    }
+
     /**
      * Sanitize callback for Settings API
      *
