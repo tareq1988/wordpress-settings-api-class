@@ -234,7 +234,7 @@ class WeDevs_Settings_API {
     }
 
     /**
-     * Displays a multicheckbox a settings field
+     * Displays a multicheckbox for a settings field
      *
      * @param array   $args settings field args
      */
@@ -257,7 +257,7 @@ class WeDevs_Settings_API {
     }
 
     /**
-     * Displays a multicheckbox a settings field
+     * Displays a radio button for a settings field
      *
      * @param array   $args settings field args
      */
@@ -317,7 +317,7 @@ class WeDevs_Settings_API {
     }
 
     /**
-     * Displays a textarea for a settings field
+     * Displays the html for a settings field
      *
      * @param array   $args settings field args
      * @return string
