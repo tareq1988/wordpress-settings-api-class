@@ -257,7 +257,7 @@ if ( !function_exists( 'wedevs_admin_init' ) ):
             )
         );
 
-        $settings_api = WeDevs_Settings_API::getInstance();
+        $settings_api = new WeDevs_Settings_API;
 
         //set sections and fields
         $settings_api->set_sections( $sections );
