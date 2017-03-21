@@ -287,6 +287,11 @@ class WeDevs_Settings_API {
     function callback_select( $args ) {
 
         $values = $this->get_option( $args['id'], $args['section'], $args['std'] );
+        // retain the old scalar values
+        if ( ! is_array($values) ) {
+            $values = (array)$values;
+        }
+        $values = array_map('esc_attr', $values);
         $size  = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
         $html  = sprintf( '<select class="%1$s" name="%2$s[%3$s][]" id="%2$s[%3$s]" %4$s>', $size, $args['section'], $args['id'], $args['multiple'] );
 
