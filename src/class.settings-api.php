@@ -26,6 +26,13 @@ class WeDevs_Settings_API {
      */
     protected $settings_fields = array();
 
+    /**
+     * Options array
+     *
+     * @var array
+     */
+    protected $options = array();
+
     public function __construct() {
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
     }
@@ -89,6 +96,16 @@ class WeDevs_Settings_API {
     }
 
     /**
+     * Set options
+     *
+     */
+    private function set_options() {
+        foreach ( $this->settings_sections as $section ) {
+            $this->options[ $section['id'] ] = get_option( $section['id'] );
+        }
+    }
+
+    /**
      * Initialize and registers the settings sections and fileds to WordPress
      *
      * Usually this should be called at `admin_init` hook.
@@ -114,6 +131,8 @@ class WeDevs_Settings_API {
 
             add_settings_section( $section['id'], $section['title'], $callback, $section['id'] );
         }
+        // set options once and for all
+        $this->set_options();
 
         //register settings fields
         foreach ( $this->settings_fields as $section => $field ) {
@@ -467,10 +486,8 @@ class WeDevs_Settings_API {
      */
     function get_option( $option, $section, $default = '' ) {
 
-        $options = get_option( $section );
-
-        if ( isset( $options[$option] ) ) {
-            return $options[$option];
+        if ( isset( $this->options[ $section ][ $option ] ) ) {
+            return $this->options[ $section ][ $option ];
         }
 
         return $default;
