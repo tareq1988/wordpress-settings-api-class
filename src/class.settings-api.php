@@ -104,12 +104,14 @@ class WeDevs_Settings_API {
             }
 
             if ( isset($section['desc']) && !empty($section['desc']) ) {
-                $section['desc'] = '<div class="inside">' . $section['desc'] . '</div>';
-                $callback = create_function('', 'echo "' . str_replace( '"', '\"', $section['desc'] ) . '";');
+                $desc = '<div class="inside">' . $section['desc'] . '</div>';
+                $callback = function () use ($desc) {
+                    echo $desc;
+                };
             } else if ( isset( $section['callback'] ) ) {
                 $callback = $section['callback'];
             } else {
-                $callback = null;
+                $callback = false;
             }
 
             add_settings_section( $section['id'], $section['title'], $callback, $section['id'] );
