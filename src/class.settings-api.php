@@ -571,7 +571,7 @@ class WeDevs_Settings_API {
                 if(window.location.hash){
                     activetab = window.location.hash;
                     if (typeof(localStorage) != 'undefined' ) {
-                        localStorage.setItem("activetab", activetabuonline);
+                        localStorage.setItem("activetab", activetab);
                     }                
                 } 
                 
