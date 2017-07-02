@@ -566,6 +566,15 @@ class WeDevs_Settings_API {
                 if (typeof(localStorage) != 'undefined' ) {
                     activetab = localStorage.getItem("activetab");
                 }
+                
+                //if url has section id as hash then set it as active or override the current local storage value
+                if(window.location.hash){
+                    activetab = window.location.hash;
+                    if (typeof(localStorage) != 'undefined' ) {
+                        localStorage.setItem("activetab", activetab);
+                    }                
+                } 
+                
                 if (activetab != '' && $(activetab).length ) {
                     $(activetab).fadeIn();
                 } else {
