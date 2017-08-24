@@ -651,7 +651,7 @@ class WeDevs_Settings_API {
                     // Finally, open the modal
                     file_frame.open();
                 });
-        })(jQuery);
+            })(jQuery);
         </script>
         <?php
         $this->_style_fix();
