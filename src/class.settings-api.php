@@ -555,27 +555,30 @@ class WeDevs_Settings_API {
      */
     function script() {
         ?>
-        <script>
-            jQuery(document).ready(function($) {
+        <script type="text/javascript">
+            (function( $ ) {
+            	// Enabling strict mode.
+	            'use strict';
+
                 //Initiate Color Picker
                 $('.wp-color-picker-field').wpColorPicker();
 
                 // Switches option sections
                 $('.group').hide();
                 var activetab = '';
-                if (typeof(localStorage) != 'undefined' ) {
+                if (typeof(localStorage) !== 'undefined' ) {
                     activetab = localStorage.getItem("activetab");
                 }
                 
                 //if url has section id as hash then set it as active or override the current local storage value
                 if(window.location.hash){
                     activetab = window.location.hash;
-                    if (typeof(localStorage) != 'undefined' ) {
+                    if (typeof(localStorage) !== 'undefined' ) {
                         localStorage.setItem("activetab", activetab);
                     }                
                 } 
                 
-                if (activetab != '' && $(activetab).length ) {
+                if (activetab !== '' && $(activetab).length ) {
                     $(activetab).fadeIn();
                 } else {
                     $('.group:first').fadeIn();
@@ -591,7 +594,7 @@ class WeDevs_Settings_API {
                     });
                 });
 
-                if (activetab != '' && $(activetab + '-tab').length ) {
+                if (activetab !== '' && $(activetab + '-tab').length ) {
                     $(activetab + '-tab').addClass('nav-tab-active');
                 }
                 else {
@@ -601,7 +604,7 @@ class WeDevs_Settings_API {
                     $('.nav-tab-wrapper a').removeClass('nav-tab-active');
                     $(this).addClass('nav-tab-active').blur();
                     var clicked_group = $(this).attr('href');
-                    if (typeof(localStorage) != 'undefined' ) {
+                    if (typeof(localStorage) !== 'undefined' ) {
                         localStorage.setItem("activetab", $(this).attr('href'));
                     }
                     $('.group').hide();
@@ -624,14 +627,14 @@ class WeDevs_Settings_API {
                     });
 
                     file_frame.on('select', function () {
-                        attachment = file_frame.state().get('selection').first().toJSON();
+                        var attachment = file_frame.state().get('selection').first().toJSON();
                         self.prev('.wpsa-url').val(attachment.url).change();
                     });
 
                     // Finally, open the modal
                     file_frame.open();
                 });
-        });
+        })(jQuery);
         </script>
         <?php
         $this->_style_fix();
