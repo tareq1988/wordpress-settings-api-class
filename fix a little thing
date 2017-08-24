@@ -1,0 +1,1196 @@
+[1mdiff --cc src/class.settings-api.php[m
+[1mindex 9e74368,833dafa..0000000[m
+[1m--- a/src/class.settings-api.php[m
+[1m+++ b/src/class.settings-api.php[m
+[36m@@@ -11,559 -11,639 +11,558 @@@[m
+   */[m
+  if ( !class_exists( 'WeDevs_Settings_API' ) ):[m
+  class WeDevs_Settings_API {[m
+[31m- [m
+[32m +    /**[m
+[32m +     * settings sections array[m
+[32m +     *[m
+[32m +     * @var array[m
+[32m +     */[m
+[32m +    protected $settings_sections = array();[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Settings fields array[m
+[32m +     *[m
+[32m +     * @var array[m
+[32m +     */[m
+[32m +    protected $settings_fields = array();[m
+[32m +[m
+[32m +    public function __construct() {[m
+[32m +        add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Enqueue scripts and styles[m
+[32m +     */[m
+[32m +    function admin_enqueue_scripts() {[m
+[32m +        wp_enqueue_style( 'wp-color-picker' );[m
+[32m +[m
+[32m +        wp_enqueue_media();[m
+[32m +        wp_enqueue_script( 'wp-color-picker' );[m
+[32m +        wp_enqueue_script( 'jquery' );[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Set settings sections[m
+[32m +     *[m
+[32m +     * @param array   $sections setting sections array[m
+[32m +     */[m
+[32m +    function set_sections( $sections ) {[m
+[32m +        $this->settings_sections = $sections;[m
+[32m +[m
+[32m +        return $this;[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Add a single section[m
+[32m +     *[m
+[32m +     * @param array   $section[m
+[32m +     */[m
+[32m +    function add_section( $section ) {[m
+[32m +        $this->settings_sections[] = $section;[m
+[32m +[m
+[32m +        return $this;[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Set settings fields[m
+[32m +     *[m
+[32m +     * @param array   $fields settings fields array[m
+[32m +     */[m
+[32m +    function set_fields( $fields ) {[m
+[32m +        $this->settings_fields = $fields;[m
+[32m +[m
+[32m +        return $this;[m
+[32m +    }[m
+[32m +[m
+[32m +    function add_field( $section, $field ) {[m
+[32m +        $defaults = array([m
+[32m +            'name'  => '',[m
+[32m +            'label' => '',[m
+[32m +            'desc'  => '',[m
+[32m +            'type'  => 'text'[m
+[32m +        );[m
+[32m +[m
+[32m +        $arg = wp_parse_args( $field, $defaults );[m
+[32m +        $this->settings_fields[$section][] = $arg;[m
+[32m +[m
+[32m +        return $this;[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Initialize and registers the settings sections and fileds to WordPress[m
+[32m +     *[m
+[32m +     * Usually this should be called at `admin_init` hook.[m
+[32m +     *[m
+[32m +     * This function gets the initiated settings sections and fields. Then[m
+[32m +     * registers them to WordPress and ready for use.[m
+[32m +     */[m
+[32m +    function admin_init() {[m
+[32m +        //register settings sections[m
+[32m +        foreach ( $this->settings_sections as $section ) {[m
+[32m +            if ( false == get_option( $section['id'] ) ) {[m
+[32m +                add_option( $section['id'] );[m
+[32m +            }[m
+[32m +[m
+[32m +            if ( isset($section['desc']) && !empty($section['desc']) ) {[m
+[32m +                $section['desc'] = '<div class="inside">' . esc_html( $section['desc'] ) . '</div>';[m
+[32m +                $callback = create_function('', 'echo "' . str_replace( '"', '\"', esc_html($section['desc'] ) ) . '";');[m
+[32m +            } else if ( isset( $section['callback'] ) ) {[m
+[32m +                $callback = $section['callback'];[m
+[32m +            } else {[m
+[32m +                $callback = null;[m
+[32m +            }[m
+[32m +[m
+[32m +            add_settings_section( $section['id'], $section['title'], $callback, $section['id'] );[m
+[32m +        }[m
+[32m +[m
+[32m +        //register settings fields[m
+[32m +        foreach ( $this->settings_fields as $section => $field ) {[m
+[32m +            foreach ( $field as $option ) {[m
+[32m +[m
+[32m +                $name = $option['name'];[m
+[32m +                $type = isset( $option['type'] ) ? $option['type'] : 'text';[m
+[32m +                $label = isset( $option['label'] ) ? $option['label'] : '';[m
+[32m +                $callback = isset( $option['callback'] ) ? $option['callback'] : array( $this, 'callback_' . $type );[m
+[32m +[m
+[32m +                $args = array([m
+[32m +                    'id'                => $name,[m
+[32m +                    'class'             => isset( $option['class'] ) ? $option['class'] : $name,[m
+[32m +                    'label_for'         => "{$section}[{$name}]",[m
+[32m +                    'desc'              => isset( $option['desc'] ) ? $option['desc'] : '',[m
+[32m +                    'name'              => $label,[m
+[32m +                    'section'           => $section,[m
+[32m +                    'size'              => isset( $option['size'] ) ? $option['size'] : null,[m
+[32m +                    'options'           => isset( $option['options'] ) ? $option['options'] : '',[m
+[32m +                    'std'               => isset( $option['default'] ) ? $option['default'] : '',[m
+[32m +                    'sanitize_callback' => isset( $option['sanitize_callback'] ) ? $option['sanitize_callback'] : '',[m
+[32m +                    'type'              => $type,[m
+[32m +                    'placeholder'       => isset( $option['placeholder'] ) ? $option['placeholder'] : '',[m
+[32m +                    'min'               => isset( $option['min'] ) ? $option['min'] : '',[m
+[32m +                    'max'               => isset( $option['max'] ) ? $option['max'] : '',[m
+[32m +                    'step'              => isset( $option['step'] ) ? $option['step'] : '',[m
+[32m +                );[m
+[32m +[m
+[32m +                add_settings_field( "{$section}[{$name}]", $label, $callback, $section, $section, $args );[m
+[32m +            }[m
+[32m +        }[m
+[32m +[m
+[32m +        // creates our settings in the options table[m
+[32m +        foreach ( $this->settings_sections as $section ) {[m
+[32m +            register_setting( $section['id'], $section['id'], array( $this, 'sanitize_options' ) );[m
+[32m +        }[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Get field description for display[m
+[32m +     *[m
+[32m +     * @param array   $args settings field args[m
+[32m +     */[m
+[32m +    public function get_field_description( $args ) {[m
+[32m +        if ( ! empty( $args['desc'] ) ) {[m
+[32m +            $desc = sprintf( '<p class="description">%s</p>', esc_html( $args['desc'] ) );[m
+[32m +        } else {[m
+[32m +            $desc = '';[m
+[32m +        }[m
+[32m +[m
+[32m +        return $desc;[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Displays a text field for a settings field[m
+[32m +     *[m
+[32m +     * @param array   $args settings field args[m
+[32m +     */[m
+[32m +    function callback_text( $args ) {[m
+[32m +[m
+[32m +        $value       = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );[m
+[32m +        $size        = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';[m
+[32m +        $type        = isset( $args['type'] ) ? $args['type'] : 'text';[m
+[32m +        $placeholder = empty( $args['placeholder'] ) ? '' : ' placeholder="' . $args['placeholder'] . '"';[m
+[32m +[m
+[32m +        $html        = sprintf( '<input type="%1$s" class="%2$s-text" id="%3$s[%4$s]" name="%3$s[%4$s]" value="%5$s"%6$s/>',[m
+[32m +                                esc_attr( $type ),[m
+[32m +                                esc_attr( $size ),[m
+[32m +                                esc_attr( $args['section'] ),[m
+[32m +                                esc_attr( $args['id'] ),[m
+[32m +                                esc_html( $value ),[m
+[32m +                                esc_attr( $placeholder )[m
+[32m +                        );[m
+[32m +        $html       .= $this->get_field_description( $args );[m
+[32m +[m
+[32m +        echo $html;[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Displays a url field for a settings field[m
+[32m +     *[m
+[32m +     * @param array   $args settings field args[m
+[32m +     */[m
+[32m +    function callback_url( $args ) {[m
+[32m +        $this->callback_text( $args );[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Displays a number field for a settings field[m
+[32m +     *[m
+[32m +     * @param array   $args settings field args[m
+[32m +     */[m
+[32m +    function callback_number( $args ) {[m
+[32m +        $value       = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );[m
+[32m +        $size        = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';[m
+[32m +        $type        = isset( $args['type'] ) ? $args['type'] : 'number';[m
+[32m +        $placeholder = empty( $args['placeholder'] ) ? '' : ' placeholder="' . $args['placeholder'] . '"';[m
+[32m +        $min         = empty( $args['min'] ) ? '' : ' min="' . $args['min'] . '"';[m
+[32m +        $max         = empty( $args['max'] ) ? '' : ' max="' . $args['max'] . '"';[m
+[32m +        $step        = empty( $args['max'] ) ? '' : ' step="' . $args['step'] . '"';[m
+[32m +[m
+[32m +        $html        = sprintf( '<input type="%1$s" class="%2$s-number" id="%3$s[%4$s]" name="%3$s[%4$s]" value="%5$s"%6$s%7$s%8$s%9$s/>',[m
+[32m +                                esc_attr( $type ),[m
+[32m +                                esc_attr( $size ),[m
+[32m +                                esc_attr( $args['section'] ),[m
+[32m +                                esc_attr( $args['id'] ),[m
+[32m +                                esc_html( $value ),[m
+[32m +                                esc_attr( $placeholder ),[m
+[32m +                                esc_attr( $min ),[m
+[32m +                                esc_attr( $max ),[m
+[32m +                                esc_attr( $step )[m
+[32m +                        );[m
+[32m +        $html       .= $this->get_field_description( $args );[m
+[32m +[m
+[32m +        echo $html;[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Displays a checkbox for a settings field[m
+[32m +     *[m
+[32m +     * @param array   $args settings field args[m
+[32m +     */[m
+[32m +    function callback_checkbox( $args ) {[m
+[32m +[m
+[32m +        $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );[m
+[32m +[m
+[32m +        $html  = '<fieldset>';[m
+[32m +        $html  .= sprintf( '<label for="wpuf-%1$s[%2$s]">', esc_attr( $args['section'] ), esc_attr( $args['id'] ) );[m
+[32m +        $html  .= sprintf( '<input type="hidden" name="%1$s[%2$s]" value="off" />', esc_attr( $args['section'] ), esc_attr( $args['id'] ) );[m
+[32m +        $html  .= sprintf( '<input type="checkbox" class="checkbox" id="wpuf-%1$s[%2$s]" name="%1$s[%2$s]" value="on" %3$s />', esc_attr( $args['section'] ), esc_attr( $args['id'] ), checked( $value, 'on', false ) );[m
+[32m +        $html  .= sprintf( '%1$s</label>', esc_html( $args['desc'] ) );[m
+[32m +        $html  .= '</fieldset>';[m
+[32m +[m
+[32m +        echo $html;[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Displays a multicheckbox for a settings field[m
+[32m +     *[m
+[32m +     * @param array   $args settings field args[m
+[32m +     */[m
+[32m +    function callback_multicheck( $args ) {[m
+[32m +[m
+[32m +        $value = $this->get_option( $args['id'], $args['section'], $args['std'] );[m
+[32m +        $html  = '<fieldset>';[m
+[32m +        $html .= sprintf( '<input type="hidden" name="%1$s[%2$s]" value="" />', esc_attr( $args['section'] ), esc_attr( $args['id'] ) );[m
+[32m +        foreach ( $args['options'] as $key => $label ) {[m
+[32m +            $checked = isset( $value[$key] ) ? $value[$key] : '0';[m
+[32m +            $html    .= sprintf( '<label for="wpuf-%1$s[%2$s][%3$s]">', esc_attr( $args['section'] ), esc_attr( $args['id'] ), esc_attr( $key ) );[m
+[32m +            $html    .= sprintf( '<input type="checkbox" class="checkbox" id="wpuf-%1$s[%2$s][%3$s]" name="%1$s[%2$s][%3$s]" value="%3$s" %4$s />', esc_attr( $args['section'] ), esc_attr( $args['id'] ), esc_attr( $key ), checked( $checked, $key, false ) );[m
+[32m +            $html    .= sprintf( '%1$s</label><br>',  $label );[m
+[32m +        }[m
+[32m +[m
+[32m +        $html .= $this->get_field_description( $args );[m
+[32m +        $html .= '</fieldset>';[m
+[32m +[m
+[32m +        echo $html;[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Displays a radio button for a settings field[m
+[32m +     *[m
+[32m +     * @param array   $args settings field args[m
+[32m +     */[m
+[32m +    function callback_radio( $args ) {[m
+[32m +[m
+[32m +        $value = $this->get_option( $args['id'], $args['section'], $args['std'] );[m
+[32m +        $html  = '<fieldset>';[m
+[32m +[m
+[32m +        foreach ( $args['options'] as $key => $label ) {[m
+[32m +            $html .= sprintf( '<label for="wpuf-%1$s[%2$s][%3$s]">',  esc_attr( $args['section'] ), esc_attr( $args['id'] ), esc_attr( $key ) );[m
+[32m +            $html .= sprintf( '<input type="radio" class="radio" id="wpuf-%1$s[%2$s][%3$s]" name="%1$s[%2$s]" value="%3$s" %4$s />', esc_attr( $args['section'] ), esc_attr( $args['id'] ), esc_attr( $key ), checked( $value, $key, false ) );[m
+[32m +            $html .= sprintf( '%1$s</label><br>', $label );[m
+[32m +        }[m
+[32m +[m
+[32m +        $html .= $this->get_field_description( $args );[m
+[32m +        $html .= '</fieldset>';[m
+[32m +[m
+[32m +        echo $html;[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Displays a selectbox for a settings field[m
+[32m +     *[m
+[32m +     * @param array   $args settings field args[m
+[32m +     */[m
+[32m +    function callback_select( $args ) {[m
+[32m +[m
+[32m +        $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );[m
+[32m +        $size  = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';[m
+[32m +        $html  = sprintf( '<select class="%1$s" name="%2$s[%3$s]" id="%2$s[%3$s]">', esc_attr( $size ), esc_attr( $args['section'] ), esc_attr( $args['id'] ) );[m
+[32m +[m
+[32m +        foreach ( $args['options'] as $key => $label ) {[m
+[32m +            $html .= sprintf( '<option value="%s"%s>%s</option>', esc_attr( $key ), selected( $value, $key, false ), esc_html( $label ) );[m
+[32m +        }[m
+[32m +[m
+[32m +        $html .= sprintf( '</select>' );[m
+[32m +        $html .= $this->get_field_description( $args );[m
+[32m +[m
+[32m +        echo $html;[m
+[32m +    }[m
+  [m
+[31m -	/**[m
+[31m -	 * settings sections array[m
+[31m -	 *[m
+[31m -	 * @var array[m
+[31m -	 */[m
+[31m -	protected $settings_sections = array();[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Settings fields array[m
+[31m -	 *[m
+[31m -	 * @var array[m
+[31m -	 */[m
+[31m -	protected $settings_fields = array();[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * WeDevs_Settings_API constructor.[m
+[31m -	 */[m
+[31m -	public function __construct() {[m
+[31m -		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Enqueue scripts and styles[m
+[31m -	 */[m
+[31m -	public function admin_enqueue_scripts() {[m
+[31m -		wp_enqueue_style( 'wp-color-picker' );[m
+[31m -		wp_enqueue_media();[m
+[31m -		wp_enqueue_script( 'wp-color-picker' );[m
+[31m -		wp_enqueue_script( 'jquery' );[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Set settings sections[m
+[31m -	 *[m
+[31m -	 * @param array $sections setting sections array[m
+[31m -	 */[m
+[31m -	public function set_sections( $sections ) {[m
+[31m -		$this->settings_sections = $sections;[m
+[31m -[m
+[31m -		return $this;[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Add a single section[m
+[31m -	 *[m
+[31m -	 * @param array $section[m
+[31m -	 */[m
+[31m -	public function add_section( $section ) {[m
+[31m -		$this->settings_sections[] = $section;[m
+[31m -[m
+[31m -		return $this;[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Set settings fields[m
+[31m -	 *[m
+[31m -	 * @param array $fields settings fields array[m
+[31m -	 */[m
+[31m -	public function set_fields( $fields ) {[m
+[31m -		$this->settings_fields = $fields;[m
+[31m -[m
+[31m -		return $this;[m
+[31m -	}[m
+[31m -[m
+[31m -	public function add_field( $section, $field ) {[m
+[31m -		$defaults = array([m
+[31m -			'name'  => '',[m
+[31m -			'label' => '',[m
+[31m -			'desc'  => '',[m
+[31m -			'type'  => 'text',[m
+[31m -		);[m
+[31m -[m
+[31m -		$arg                                 = wp_parse_args( $field, $defaults );[m
+[31m -		$this->settings_fields[ $section ][] = $arg;[m
+[31m -[m
+[31m -		return $this;[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Initialize and registers the settings sections and fileds to WordPress[m
+[31m -	 *[m
+[31m -	 * Usually this should be called at `admin_init` hook.[m
+[31m -	 *[m
+[31m -	 * This function gets the initiated settings sections and fields. Then[m
+[31m -	 * registers them to WordPress and ready for use.[m
+[31m -	 */[m
+[31m -	public function admin_init() {[m
+[31m -		//register settings sections[m
+[31m -		foreach ( $this->settings_sections as $section ) {[m
+[31m -			if ( false === get_option( $section['id'] ) ) {[m
+[31m -				add_option( $section['id'] );[m
+[31m -			}[m
+[31m -[m
+[31m -			if ( isset( $section['desc'] ) && ! empty( $section['desc'] ) ) {[m
+[31m -				$section['desc'] = '<div class="inside">' . esc_html( $section['desc'] ) . '</div>';[m
+[31m -				$callback        = create_function( '', 'echo "' . str_replace( '"', '\"', esc_html( $section['desc'] ) ) . '";' );[m
+[31m -			} elseif ( isset( $section['callback'] ) ) {[m
+[31m -				$callback = $section['callback'];[m
+[31m -			} else {[m
+[31m -				$callback = null;[m
+[31m -			}[m
+[31m -[m
+[31m -			add_settings_section( $section['id'], $section['title'], $callback, $section['id'] );[m
+[31m -		}[m
+[31m -[m
+[31m -		//register settings fields[m
+[31m -		foreach ( $this->settings_fields as $section => $field ) {[m
+[31m -			foreach ( $field as $option ) {[m
+[31m -[m
+[31m -				$name     = $option['name'];[m
+[31m -				$type     = isset( $option['type'] ) ? $option['type'] : 'text';[m
+[31m -				$label    = isset( $option['label'] ) ? $option['label'] : '';[m
+[31m -				$callback = isset( $option['callback'] ) ? $option['callback'] : array( $this, 'callback_' . $type );[m
+[31m -[m
+[31m -				$args = array([m
+[31m -					'id'                => $name,[m
+[31m -					'class'             => isset( $option['class'] ) ? $option['class'] : $name,[m
+[31m -					'label_for'         => "{$section}[{$name}]",[m
+[31m -					'desc'              => isset( $option['desc'] ) ? $option['desc'] : '',[m
+[31m -					'name'              => $label,[m
+[31m -					'section'           => $section,[m
+[31m -					'size'              => isset( $option['size'] ) ? $option['size'] : null,[m
+[31m -					'options'           => isset( $option['options'] ) ? $option['options'] : '',[m
+[31m -					'std'               => isset( $option['default'] ) ? $option['default'] : '',[m
+[31m -					'sanitize_callback' => isset( $option['sanitize_callback'] ) ? $option['sanitize_callback'] : '',[m
+[31m -					'type'              => $type,[m
+[31m -					'placeholder'       => isset( $option['placeholder'] ) ? $option['placeholder'] : '',[m
+[31m -					'min'               => isset( $option['min'] ) ? $option['min'] : '',[m
+[31m -					'max'               => isset( $option['max'] ) ? $option['max'] : '',[m
+[31m -					'step'              => isset( $option['step'] ) ? $option['step'] : '',[m
+[31m -				);[m
+[31m -[m
+[31m -				add_settings_field( "{$section}[{$name}]", $label, $callback, $section, $section, $args );[m
+[31m -			}[m
+[31m -		}[m
+[31m -[m
+[31m -		// creates our settings in the options table[m
+[31m -		foreach ( $this->settings_sections as $section ) {[m
+[31m -			register_setting( $section['id'], $section['id'], array( $this, 'sanitize_options' ) );[m
+[31m -		}[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Get field description for display[m
+[31m -	 *[m
+[31m -	 * @param array $args settings field args[m
+[31m -	 */[m
+[31m -	public function get_field_description( $args ) {[m
+[31m -		if ( ! empty( $args['desc'] ) ) {[m
+[31m -			$desc = sprintf( '<p class="description">%s</p>', $args['desc'] );[m
+[31m -		} else {[m
+[31m -			$desc = '';[m
+[31m -		}[m
+[31m -[m
+[31m -		return $desc;[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Displays a text field for a settings field[m
+[31m -	 *[m
+[31m -	 * @param array $args settings field args[m
+[31m -	 */[m
+[31m -	public function callback_text( $args ) {[m
+[31m -[m
+[31m -		$value       = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );[m
+[31m -		$size        = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : 'regular';[m
+[31m -		$type        = isset( $args['type'] ) ? $args['type'] : 'text';[m
+[31m -		$placeholder = empty( $args['placeholder'] ) ? '' : ' placeholder="' . $args['placeholder'] . '"';[m
+[31m -[m
+[31m -		$html = sprintf([m
+[31m -			'<input type="%1$s" class="%2$s-text" id="%3$s[%4$s]" name="%3$s[%4$s]" value="%5$s"%6$s/>',[m
+[31m -			esc_attr( $type ),[m
+[31m -			esc_attr( $size ),[m
+[31m -			esc_attr( $args['section'] ),[m
+[31m -			esc_attr( $args['id'] ),[m
+[31m -			esc_html( $value ),[m
+[31m -			esc_attr( $placeholder )[m
+[31m -		);[m
+[31m -		$html .= $this->get_field_description( $args );[m
+[31m -[m
+[31m -		echo $html;[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Displays a url field for a settings field[m
+[31m -	 *[m
+[31m -	 * @param array $args settings field args[m
+[31m -	 */[m
+[31m -	public function callback_url( $args ) {[m
+[31m -		$this->callback_text( $args );[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Displays a number field for a settings field[m
+[31m -	 *[m
+[31m -	 * @param array $args settings field args[m
+[31m -	 */[m
+[31m -	public function callback_number( $args ) {[m
+[31m -		$value       = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );[m
+[31m -		$size        = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : 'regular';[m
+[31m -		$type        = isset( $args['type'] ) ? $args['type'] : 'number';[m
+[31m -		$placeholder = empty( $args['placeholder'] ) ? '' : ' placeholder="' . $args['placeholder'] . '"';[m
+[31m -		$min         = empty( $args['min'] ) ? '' : ' min="' . $args['min'] . '"';[m
+[31m -		$max         = empty( $args['max'] ) ? '' : ' max="' . $args['max'] . '"';[m
+[31m -		$step        = empty( $args['max'] ) ? '' : ' step="' . $args['step'] . '"';[m
+[31m -[m
+[31m -		$html = sprintf([m
+[31m -			'<input type="%1$s" class="%2$s-number" id="%3$s[%4$s]" name="%3$s[%4$s]" value="%5$s"%6$s%7$s%8$s%9$s/>',[m
+[31m -			esc_attr( $type ),[m
+[31m -			esc_attr( $size ),[m
+[31m -			esc_attr( $args['section'] ),[m
+[31m -			esc_attr( $args['id'] ),[m
+[31m -			absint( $value ),[m
+[31m -			esc_attr( $placeholder ),[m
+[31m -			esc_attr( $min ),[m
+[31m -			esc_attr( $max ),[m
+[31m -			esc_attr( $step )[m
+[31m -		);[m
+[31m -		$html .= $this->get_field_description( $args );[m
+[31m -[m
+[31m -		echo $html;[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Displays a checkbox for a settings field[m
+[31m -	 *[m
+[31m -	 * @param array $args settings field args[m
+[31m -	 */[m
+[31m -	public function callback_checkbox( $args ) {[m
+[31m -[m
+[31m -		$value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );[m
+[31m -[m
+[31m -		$html = '<fieldset>';[m
+[31m -		$html .= sprintf([m
+[31m -			'<label for="wpuf-%1$s[%2$s]">',[m
+[31m -			esc_attr( $args['section'] ),[m
+[31m -			esc_attr( $args['id'] )[m
+[31m -		);[m
+[31m -		$html .= sprintf([m
+[31m -			'<input type="hidden" name="%1$s[%2$s]" value="off" />',[m
+[31m -			esc_attr( $args['section'] ),[m
+[31m -			esc_attr( $args['id'] )[m
+[31m -		);[m
+[31m -		$html .= sprintf([m
+[31m -			'<input type="checkbox" class="checkbox" id="wpuf-%1$s[%2$s]" name="%1$s[%2$s]" value="on" %3$s />',[m
+[31m -			esc_attr( $args['section'] ),[m
+[31m -			esc_attr( $args['id'] ),[m
+[31m -			checked( $value, 'on', false )[m
+[31m -		);[m
+[31m -		$html .= sprintf( '%1$s</label>', esc_html( $args['desc'] ) );[m
+[31m -		$html .= '</fieldset>';[m
+[31m -[m
+[31m -		echo $html;[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Displays a multicheckbox for a settings field[m
+[31m -	 *[m
+[31m -	 * @param array $args settings field args[m
+[31m -	 */[m
+[31m -	public function callback_multicheck( $args ) {[m
+[31m -[m
+[31m -		$value = $this->get_option( $args['id'], $args['section'], $args['std'] );[m
+[31m -		$html  = '<fieldset>';[m
+[31m -		$html  .= sprintf([m
+[31m -			'<input type="hidden" name="%1$s[%2$s]" value="" />',[m
+[31m -			esc_html( $args['section'] ),[m
+[31m -			esc_html( $args['id'] )[m
+[31m -		);[m
+[31m -		foreach ( $args['options'] as $key => $label ) {[m
+[31m -			$checked = isset( $value[ $key ] ) ? $value[ $key ] : '0';[m
+[31m -			$html    .= sprintf([m
+[31m -				'<label for="wpuf-%1$s[%2$s][%3$s]">',[m
+[31m -				esc_attr( $args['section'] ),[m
+[31m -				esc_attr( $args['id'] ),[m
+[31m -				esc_attr( $key )[m
+[31m -			);[m
+[31m -			$html    .= sprintf([m
+[31m -				'<input type="checkbox" class="checkbox" id="wpuf-%1$s[%2$s][%3$s]" name="%1$s[%2$s][%3$s]" value="%3$s" %4$s />',[m
+[31m -				esc_attr( $args['section'] ),[m
+[31m -				esc_attr( $args['id'] ),[m
+[31m -				esc_attr( $key ),[m
+[31m -				checked( $checked, $key, false )[m
+[31m -			);[m
+[31m -			$html    .= sprintf( '%1$s</label><br>', esc_html( $label ) );[m
+[31m -		}[m
+[31m -[m
+[31m -		$html .= $this->get_field_description( $args );[m
+[31m -		$html .= '</fieldset>';[m
+[31m -[m
+[31m -		echo $html;[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Displays a radio button for a settings field[m
+[31m -	 *[m
+[31m -	 * @param array $args settings field args[m
+[31m -	 */[m
+[31m -	public function callback_radio( $args ) {[m
+[31m -[m
+[31m -		$value = $this->get_option( $args['id'], $args['section'], $args['std'] );[m
+[31m -		$html  = '<fieldset>';[m
+[31m -[m
+[31m -		foreach ( $args['options'] as $key => $label ) {[m
+[31m -			$html .= sprintf([m
+[31m -				'<label for="wpuf-%1$s[%2$s][%3$s]">',[m
+[31m -				esc_attr( $args['section'] ),[m
+[31m -				esc_attr( $args['id'] ),[m
+[31m -				esc_attr( $key )[m
+[31m -			);[m
+[31m -			$html .= sprintf([m
+[31m -				'<input type="radio" class="radio" id="wpuf-%1$s[%2$s][%3$s]" name="%1$s[%2$s]" value="%3$s" %4$s />',[m
+[31m -				esc_attr( $args['section'] ),[m
+[31m -				esc_attr( $args['id'] ),[m
+[31m -				esc_attr( $key ),[m
+[31m -				checked( $value, $key, false )[m
+[31m -			);[m
+[31m -			$html .= sprintf( '%1$s</label><br>', esc_html( $label ) );[m
+[31m -		}[m
+[31m -[m
+[31m -		$html .= $this->get_field_description( $args );[m
+[31m -		$html .= '</fieldset>';[m
+[31m -[m
+[31m -		echo $html;[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Displays a selectbox for a settings field[m
+[31m -	 *[m
+[31m -	 * @param array $args settings field args[m
+[31m -	 */[m
+[31m -	public function callback_select( $args ) {[m
+[31m -[m
+[31m -		$value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );[m
+[31m -		$size  = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : 'regular';[m
+[31m -		$html  = sprintf( '<select class="%1$s" name="%2$s[%3$s]" id="%2$s[%3$s]">', $size, $args['section'], $args['id'] );[m
+[31m -[m
+[31m -		foreach ( $args['options'] as $key => $label ) {[m
+[31m -			$html .= sprintf([m
+[31m -				'<option value="%s"%s>%s</option>',[m
+[31m -				esc_html( $key ),[m
+[31m -				selected( $value, $key, false ),[m
+[31m -				esc_html( $label )[m
+[31m -			);[m
+[31m -		}[m
+[31m -[m
+[31m -		$html .= '</select>';[m
+[31m -		$html .= $this->get_field_description( $args );[m
+[31m -[m
+[31m -		echo $html;[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Displays a textarea for a settings field[m
+[31m -	 *[m
+[31m -	 * @param array $args settings field args[m
+[31m -	 */[m
+[31m -	public function callback_textarea( $args ) {[m
+[31m -[m
+[31m -		$value       = esc_textarea( $this->get_option( $args['id'], $args['section'], $args['std'] ) );[m
+[31m -		$size        = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : 'regular';[m
+[31m -		$placeholder = empty( $args['placeholder'] ) ? '' : ' placeholder="' . $args['placeholder'] . '"';[m
+[31m -[m
+[31m -		$html = sprintf([m
+[31m -			'<textarea rows="5" cols="55" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]"%4$s>%5$s</textarea>',[m
+[31m -			esc_attr( $size ),[m
+[31m -			esc_attr( $args['section'] ),[m
+[31m -			esc_attr( $args['id'] ),[m
+[31m -			esc_attr( $placeholder ),[m
+[31m -			esc_textarea( $value )[m
+[31m -		);[m
+[31m -		$html .= $this->get_field_description( $args );[m
+[31m -[m
+[31m -		echo $html;[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Displays the html for a settings field[m
+[31m -	 *[m
+[31m -	 * @param array $args settings field args[m
+[31m -	 *[m
+[31m -	 * @return string[m
+[31m -	 */[m
+[31m -	public function callback_html( $args ) {[m
+[31m -		echo esc_html( $this->get_field_description( $args ) );[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Displays a rich text textarea for a settings field[m
+[31m -	 *[m
+[31m -	 * @param array $args settings field args[m
+[31m -	 */[m
+[31m -	public function callback_wysiwyg( $args ) {[m
+[31m -[m
+[31m -		$value = $this->get_option( $args['id'], $args['section'], $args['std'] );[m
+[31m -		$size  = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : '500px';[m
+[31m -[m
+[31m -		echo '<div style="max-width: ' . esc_attr( $size ) . ';">';[m
+[31m -[m
+[31m -		$editor_settings = array([m
+[31m -			'teeny'         => true,[m
+[31m -			'textarea_name' => $args['section'] . '[' . $args['id'] . ']',[m
+[31m -			'textarea_rows' => 10,[m
+[31m -		);[m
+[31m -[m
+[31m -		if ( isset( $args['options'] ) && is_array( $args['options'] ) ) {[m
+[31m -			$editor_settings = array_merge( $editor_settings, $args['options'] );[m
+[31m -		}[m
+[31m -[m
+[31m -		wp_editor( $value, $args['section'] . '-' . $args['id'], $editor_settings );[m
+[31m -[m
+[31m -		echo '</div>';[m
+[31m -[m
+[31m -		echo $this->get_field_description( $args );[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Displays a file upload field for a settings field[m
+[31m -	 *[m
+[31m -	 * @param array $args settings field args[m
+[31m -	 */[m
+[31m -	public function callback_file( $args ) {[m
+[31m -[m
+[31m -		$value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );[m
+[31m -		$size  = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : 'regular';[m
+[31m -		$id    = $args['section'] . '[' . $args['id'] . ']';[m
+[31m -		$label = isset( $args['options']['button_label'] ) ? $args['options']['button_label'] : __( 'Choose File' );[m
+[31m -[m
+[31m -		$html = sprintf([m
+[31m -			'<input type="text" class="%1$s-text wpsa-url" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>',[m
+[31m -			esc_attr( $size ),[m
+[31m -			esc_attr( $args['section'] ),[m
+[31m -			esc_attr( $args['id'] ),[m
+[31m -			esc_html( $value )[m
+[31m -		);[m
+[31m -		$html .= '<input type="button" class="button wpsa-browse" value="' . esc_attr( $label ) . '" />';[m
+[31m -		$html .= $this->get_field_description( $args );[m
+[31m -[m
+[31m -		echo $html;[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Displays a password field for a settings field[m
+[31m -	 *[m
+[31m -	 * @param array $args settings field args[m
+[31m -	 */[m
+[31m -	public function callback_password( $args ) {[m
+[31m -[m
+[31m -		$value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );[m
+[31m -		$size  = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : 'regular';[m
+[31m -[m
+[31m -		$html = sprintf([m
+[31m -			'<input type="password" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>',[m
+[31m -			esc_attr( $size ),[m
+[31m -			esc_attr( $args['section'] ),[m
+[31m -			esc_attr( $args['id'] ),[m
+[31m -			esc_html( $value )[m
+[31m -		);[m
+[31m -		$html .= $this->get_field_description( $args );[m
+[31m -[m
+[31m -		echo $html;[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Displays a color picker field for a settings field[m
+[31m -	 *[m
+[31m -	 * @param array $args settings field args[m
+[31m -	 */[m
+[31m -	public function callback_color( $args ) {[m
+[31m -[m
+[31m -		$value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );[m
+[31m -		$size  = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : 'regular';[m
+[31m -[m
+[31m -		$html = sprintf([m
+[31m -			'<input type="text" class="%1$s-text wp-color-picker-field" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s" data-default-color="%5$s" />',[m
+[31m -			esc_attr( $size ),[m
+[31m -			esc_attr( $args['section'] ),[m
+[31m -			esc_attr( $args['id'] ),[m
+[31m -			esc_html( $value ),[m
+[31m -			esc_attr( $args['std'] )[m
+[31m -		);[m
+[31m -		$html .= $this->get_field_description( $args );[m
+[31m -[m
+[31m -		echo $html;[m
+[31m -	}[m
+[31m -[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Displays a select box for creating the pages select box[m
+[31m -	 *[m
+[31m -	 * @param array $args settings field args[m
+[31m -	 */[m
+[31m -	public function callback_pages( $args ) {[m
+[31m -[m
+[31m -		$dropdown_args = array([m
+[31m -			'selected' => esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) ),[m
+[31m -			'name'     => $args['section'] . '[' . $args['id'] . ']',[m
+[31m -			'id'       => $args['section'] . '[' . $args['id'] . ']',[m
+[31m -			'echo'     => 0[m
+[31m -		);[m
+[31m -		$html          = wp_dropdown_pages( $dropdown_args );[m
+[31m -		echo $html;[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Sanitize callback for Settings API[m
+[31m -	 *[m
+[31m -	 * @return mixed[m
+[31m -	 */[m
+[31m -	public function sanitize_options( $options ) {[m
+[31m -[m
+[31m -		if ( ! $options ) {[m
+[31m -			return $options;[m
+[31m -		}[m
+[31m -[m
+[31m -		foreach ( $options as $option_slug => $option_value ) {[m
+[31m -			$sanitize_callback = $this->get_sanitize_callback( $option_slug );[m
+[31m -[m
+[31m -			// If callback is set, call it[m
+[31m -			if ( $sanitize_callback ) {[m
+[31m -				$options[ $option_slug ] = call_user_func( $sanitize_callback, $option_value );[m
+[31m -				continue;[m
+[31m -			}[m
+[31m -		}[m
+[31m -[m
+[31m -		return $options;[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Get sanitization callback for given option slug[m
+[31m -	 *[m
+[31m -	 * @param string $slug option slug[m
+[31m -	 *[m
+[31m -	 * @return mixed string or bool false[m
+[31m -	 */[m
+[31m -	public function get_sanitize_callback( $slug = '' ) {[m
+[31m -		if ( empty( $slug ) ) {[m
+[31m -			return false;[m
+[31m -		}[m
+[31m -[m
+[31m -		// Iterate over registered fields and see if we can find proper callback[m
+[31m -		foreach ( $this->settings_fields as $section => $options ) {[m
+[31m -			foreach ( $options as $option ) {[m
+[31m -				if ( $option['name'] !== $slug ) {[m
+[31m -					continue;[m
+[31m -				}[m
+[31m -[m
+[31m -				// Return the callback name[m
+[31m -				return isset( $option['sanitize_callback'] ) && is_callable( $option['sanitize_callback'] ) ? $option['sanitize_callback'] : false;[m
+[31m -			}[m
+[31m -		}[m
+[31m -[m
+[31m -		return false;[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Get the value of a settings field[m
+[31m -	 *[m
+[31m -	 * @param string $option settings field name[m
+[31m -	 * @param string $section the section name this field belongs to[m
+[31m -	 * @param string $default default text if it's not found[m
+[31m -	 *[m
+[31m -	 * @return string[m
+[31m -	 */[m
+[31m -	public function get_option( $option, $section, $default = '' ) {[m
+[31m -[m
+[31m -		$options = get_option( $section );[m
+[31m -[m
+[31m -		if ( isset( $options[ $option ] ) ) {[m
+[31m -			return $options[ $option ];[m
+[31m -		}[m
+[31m -[m
+[31m -		return $default;[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Show navigations as tab[m
+[31m -	 *[m
+[31m -	 * Shows all the settings section labels as tab[m
+[31m -	 */[m
+[31m -	public function show_navigation() {[m
+[31m -		$html = '<h2 class="nav-tab-wrapper">';[m
+[31m -[m
+[31m -		$count = count( $this->settings_sections );[m
+[31m -[m
+[31m -		// don't show the navigation if only one section exists[m
+[31m -		if ( $count === 1 ) {[m
+[31m -			return;[m
+[31m -		}[m
+[31m -[m
+[31m -		foreach ( $this->settings_sections as $tab ) {[m
+[31m -			$html .= sprintf([m
+[31m -				'<a href="#%1$s" class="nav-tab" id="%1$s-tab">%2$s</a>',[m
+[31m -				esc_attr( $tab['id'] ),[m
+[31m -				esc_html( $tab['title'] )[m
+[31m -			);[m
+[31m -		}[m
+[31m -[m
+[31m -		$html .= '</h2>';[m
+[31m -[m
+[31m -		echo $html;[m
+[31m -	}[m
+[31m -[m
+[31m -	/**[m
+[31m -	 * Show the section settings forms[m
+[31m -	 *[m
+[31m -	 * This function displays every sections in a different form[m
+[31m -	 */[m
+[31m -	public function show_forms() {[m
+[31m -		?>[m
+[31m -		<div class="metabox-holder">[m
+[31m -			<?php foreach ( $this->settings_sections as $form ) { ?>[m
+[31m -				<div id="<?php echo esc_attr( $form['id'] ); ?>" class="group" style="display: none;">[m
+[31m -					<form method="post" action="options.php">[m
+[31m -						<?php[m
+[31m -						do_action( 'wsa_form_top_' . $form['id'], $form );[m
+[31m -						settings_fields( $form['id'] );[m
+[31m -						do_settings_sections( $form['id'] );[m
+[31m -						do_action( 'wsa_form_bottom_' . $form['id'], $form );[m
+[31m -						if ( isset( $this->settings_fields[ $form['id'] ] ) ) :[m
+[31m -							?>[m
+[31m -							<div style="padding-left: 10px">[m
+[31m -								<?php submit_button(); ?>[m
+[31m -							</div>[m
+[31m -						<?php endif; ?>[m
+[31m -					</form>[m
+[31m -				</div>[m
+[31m -			<?php } ?>[m
+[31m -		</div>[m
+[31m -		<?php[m
+[31m -		$this->script();[m
+[31m -	}[m
+[32m +    /**[m
+[32m +     * Displays a textarea for a settings field[m
+[32m +     *[m
+[32m +     * @param array   $args settings field args[m
+[32m +     */[m
+[32m +    function callback_textarea( $args ) {[m
+[32m +[m
+[32m +        $value       = esc_textarea( $this->get_option( $args['id'], $args['section'], $args['std'] ) );[m
+[32m +        $size        = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';[m
+[32m +        $placeholder = empty( $args['placeholder'] ) ? '' : ' placeholder="'.$args['placeholder'].'"';[m
+[32m +[m
+[32m +        $html        = sprintf( '<textarea rows="5" cols="55" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]"%4$s>%5$s</textarea>', esc_attr( $size ), esc_attr( $args['section'] ), esc_attr( $args['id'] ), esc_attr( $placeholder ), esc_html( $value ) );[m
+[32m +        $html        .= $this->get_field_description( $args );[m
+[32m +[m
+[32m +        echo $html;[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Displays the html for a settings field[m
+[32m +     *[m
+[32m +     * @param array   $args settings field args[m
+[32m +     * @return string[m
+[32m +     */[m
+[32m +    function callback_html( $args ) {[m
+[32m +        echo $this->get_field_description( $args );[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Displays a rich text textarea for a settings field[m
+[32m +     *[m
+[32m +     * @param array   $args settings field args[m
+[32m +     */[m
+[32m +    function callback_wysiwyg( $args ) {[m
+[32m +[m
+[32m +        $value = esc_html( $this->get_option( $args['id'], $args['section'], $args['std'] ) );[m
+[32m +        $size  = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : '500px';[m
+[32m +[m
+[32m +        echo '<div style="max-width: ' . $size . ';">';[m
+[32m +[m
+[32m +        $editor_settings = array([m
+[32m +            'teeny'         => true,[m
+[32m +            'textarea_name' => esc_attr( $args['section'] ) . '[' . esc_attr( $args['id'] ) . ']',[m
+[32m +            'textarea_rows' => 10[m
+[32m +        );[m
+[32m +[m
+[32m +        if ( isset( $args['options'] ) && is_array( $args['options'] ) ) {[m
+[32m +            $editor_settings = array_merge( $editor_settings, $args['options'] );[m
+[32m +        }[m
+[32m +[m
+[32m +        wp_editor( $value, esc_attr( $args['section'] ) . '-' . esc_attr( $args['id'] ), $editor_settings );[m
+[32m +[m
+[32m +        echo '</div>';[m
+[32m +[m
+[32m +        echo $this->get_field_description( $args );[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Displays a file upload field for a settings field[m
+[32m +     *[m
+[32m +     * @param array   $args settings field args[m
+[32m +     */[m
+[32m +    function callback_file( $args ) {[m
+[32m +[m
+[32m +        $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );[m
+[32m +        $size  = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';[m
+[32m +        $id    = esc_attr( $args['section'] )  . '[' . esc_attr( $args['id'] ) . ']';[m
+[32m +        $label = isset( $args['options']['button_label'] ) ? $args['options']['button_label'] : __( 'Choose File' );[m
+[32m +[m
+[32m +        $html  = sprintf( '<input type="text" class="%1$s-text wpsa-url" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', esc_attr( $size ), esc_attr( $args['section'] ), esc_attr( $args['id'] ), esc_html( $value ) );[m
+[32m +        $html  .= '<input type="button" class="button wpsa-browse" value="' . $label . '" />';[m
+[32m +        $html  .= $this->get_field_description( $args );[m
+[32m +[m
+[32m +        echo $html;[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Displays a password field for a settings field[m
+[32m +     *[m
+[32m +     * @param array   $args settings field args[m
+[32m +     */[m
+[32m +    function callback_password( $args ) {[m
+[32m +[m
+[32m +        $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );[m
+[32m +        $size  = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';[m
+[32m +[m
+[32m +        $html  = sprintf( '<input type="password" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', esc_attr( $size ), esc_attr( $args['section'] ), esc_attr( $args['id'] ), esc_html( $value ) );[m
+[32m +        $html  .= $this->get_field_description( $args );[m
+[32m +[m
+[32m +        echo $html;[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Displays a color picker field for a settings field[m
+[32m +     *[m
+[32m +     * @param array   $args settings field args[m
+[32m +     */[m
+[32m +    function callback_color( $args ) {[m
+[32m +[m
+[32m +        $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );[m
+[32m +        $size  = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';[m
+[32m +[m
+[32m +        $html  = sprintf( '<input type="text" class="%1$s-text wp-color-picker-field" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s" data-default-color="%5$s" />', esc_attr( $size ), esc_attr( $args['section'] ), esc_attr( $args['id'] ), esc_html( $value ), esc_attr( $args['std'] ) );[m
+[32m +        $html  .= $this->get_field_description( $args );[m
+[32m +[m
+[32m +        echo $html;[m
+[32m +    }[m
+[32m +[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Displays a select box for creating the pages select box[m
+[32m +     *[m
+[32m +     * @param array   $args settings field args[m
+[32m +     */[m
+[32m +    function callback_pages( $args ) {[m
+[32m +[m
+[32m +        $dropdown_args = array([m
+[32m +            'selected' => esc_attr($this->get_option($args['id'], $args['section'], $args['std'] ) ),[m
+[32m +            'name'     => esc_attr( $args['section'] ) . '[' . esc_attr( $args['id'] ) . ']',[m
+[32m +            'id'       => esc_attr( $args['section'] ) . '[' . esc_attr( $args['id'] ) . ']',[m
+[32m +            'echo'     => 0[m
+[32m +        );[m
+[32m +        $html = wp_dropdown_pages( $dropdown_args );[m
+[32m +        echo $html;[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Sanitize callback for Settings API[m
+[32m +     *[m
+[32m +     * @return mixed[m
+[32m +     */[m
+[32m +    function sanitize_options( $options ) {[m
+[32m +[m
+[32m +        if ( !$options ) {[m
+[32m +            return $options;[m
+[32m +        }[m
+[32m +[m
+[32m +        foreach( $options as $option_slug => $option_value ) {[m
+[32m +            $sanitize_callback = $this->get_sanitize_callback( $option_slug );[m
+[32m +[m
+[32m +            // If callback is set, call it[m
+[32m +            if ( $sanitize_callback ) {[m
+[32m +                $options[ $option_slug ] = call_user_func( $sanitize_callback, $option_value );[m
+[32m +                continue;[m
+[32m +            }[m
+[32m +        }[m
+[32m +[m
+[32m +        return $options;[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Get sanitization callback for given option slug[m
+[32m +     *[m
+[32m +     * @param string $slug option slug[m
+[32m +     *[m
+[32m +     * @return mixed string or bool false[m
+[32m +     */[m
+[32m +    function get_sanitize_callback( $slug = '' ) {[m
+[32m +        if ( empty( $slug ) ) {[m
+[32m +            return false;[m
+[32m +        }[m
+[32m +[m
+[32m +        // Iterate over registered fields and see if we can find proper callback[m
+[32m +        foreach( $this->settings_fields as $section => $options ) {[m
+[32m +            foreach ( $options as $option ) {[m
+[32m +                if ( $option['name'] != $slug ) {[m
+[32m +                    continue;[m
+[32m +                }[m
+[32m +[m
+[32m +                // Return the callback name[m
+[32m +                return isset( $option['sanitize_callback'] ) && is_callable( $option['sanitize_callback'] ) ? $option['sanitize_callback'] : false;[m
+[32m +            }[m
+[32m +        }[m
+[32m +[m
+[32m +        return false;[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Get the value of a settings field[m
+[32m +     *[m
+[32m +     * @param string  $option  settings field name[m
+[32m +     * @param string  $section the section name this field belongs to[m
+[32m +     * @param string  $default default text if it's not found[m
+[32m +     * @return string[m
+[32m +     */[m
+[32m +    function get_option( $option, $section, $default = '' ) {[m
+[32m +[m
+[32m +        $options = get_option( $section );[m
+[32m +[m
+[32m +        if ( isset( $options[$option] ) ) {[m
+[32m +            return $options[$option];[m
+[32m +        }[m
+[32m +[m
+[32m +        return $default;[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Show navigations as tab[m
+[32m +     *[m
+[32m +     * Shows all the settings section labels as tab[m
+[32m +     */[m
+[32m +    function show_navigation() {[m
+[32m +        $html = '<h2 class="nav-tab-wrapper">';[m
+[32m +[m
+[32m +        $count = count( $this->settings_sections );[m
+[32m +[m
+[32m +        // don't show the navigation if only one section exists[m
+[32m +        if ( $count === 1 ) {[m
+[32m +            return;[m
+[32m +        }[m
+[32m +[m
+[32m +        foreach ( $this->settings_sections as $tab ) {[m
+[32m +            $html .= sprintf( '<a href="#%1$s" class="nav-tab" id="%1$s-tab">%2$s</a>', esc_attr( $tab['id'] ), esc_html( $tab['title'] ) );[m
+[32m +        }[m
+[32m +[m
+[32m +        $html .= '</h2>';[m
+[32m +[m
+[32m +        echo $html;[m
+[32m +    }[m
+[32m +[m
+[32m +    /**[m
+[32m +     * Show the section settings forms[m
+[32m +     *[m
+[32m +     * This function displays every sections in a different form[m
+[32m +     */[m
+[32m +    function show_forms() {[m
+[32m +        ?>[m
+[32m +        <div class="metabox-holder">[m
+[32m +            <?php foreach ( $this->settings_sections as $form ) { ?>[m
+[32m +                <div id="<?php echo esc_attr( $form['id'] ); ?>" class="group" style="display: none;">[m
+[32m +                    <form method="post" action="options.php">[m
+[32m +                        <?php[m
+[32m +                        do_action( 'wsa_form_top_' . $form['id'], $form );[m
+[32m +                        settings_fields( $form['id'] );[m
+[32m +                        do_settings_sections( $form['id'] );[m
+[32m +                        do_action( 'wsa_form_bottom_' . $form['id'], $form );[m
+[32m +                        if ( isset( $this->settings_fields[ $form['id'] ] ) ):[m
+[32m +                        ?>[m
+[32m +                        <div style="padding-left: 10px">[m
+[32m +                            <?php submit_button(); ?>[m
+[32m +                        </div>[m
+[32m +                        <?php endif; ?>[m
+[32m +                    </form>[m
+[32m +                </div>[m
+[32m +            <?php } ?>[m
+[32m +        </div>[m
+[32m +        <?php[m
+[32m +        $this->script();[m
+[32m +    }[m
+  [m
+      /**[m
+       * Tabbable JavaScript codes & Initiate Color Picker[m

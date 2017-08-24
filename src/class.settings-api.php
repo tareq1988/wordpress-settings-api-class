@@ -11,7 +11,6 @@
  */
 if ( !class_exists( 'WeDevs_Settings_API' ) ):
 class WeDevs_Settings_API {
-
     /**
      * settings sections array
      *
@@ -547,11 +546,11 @@ class WeDevs_Settings_API {
                 <div id="<?php echo esc_attr( $form['id'] ); ?>" class="group" style="display: none;">
                     <form method="post" action="options.php">
                         <?php
-                        do_action( 'wsa_form_top_' . esc_attr( $form['id'] ), $form );
-                        settings_fields( esc_attr( $form['id'] ) );
-                        do_settings_sections( esc_attr( $form['id'] ) );
-                        do_action( 'wsa_form_bottom_' . esc_attr( $form['id'] ), $form );
-                        if ( isset( $this->settings_fields[ esc_attr( $form['id'] ) ] ) ):
+                        do_action( 'wsa_form_top_' . $form['id'], $form );
+                        settings_fields( $form['id'] );
+                        do_settings_sections( $form['id'] );
+                        do_action( 'wsa_form_bottom_' . $form['id'], $form );
+                        if ( isset( $this->settings_fields[ $form['id'] ] ) ):
                         ?>
                         <div style="padding-left: 10px">
                             <?php submit_button(); ?>
@@ -573,103 +572,114 @@ class WeDevs_Settings_API {
     function script() {
         ?>
         <script type="text/javascript">
-            (function( $ ) {
-            	// Enabling strict mode.
-	            'use strict';
+	        (function( $ ) {
+	        	// Enabling strict mode.
+		        'use strict';
 
-                //Initiate Color Picker
-                $('.wp-color-picker-field').wpColorPicker();
+	        	$(function(){
+			        //Initiate Color Picker
+			        $('.wp-color-picker-field').wpColorPicker();
 
-                // Switches option sections
-                $('.group').hide();
-                var activetab = '';
-                if (typeof(localStorage) !== 'undefined' ) {
-                    activetab = localStorage.getItem("activetab");
-                }
-                
-                //if url has section id as hash then set it as active or override the current local storage value
-                if(window.location.hash){
-                    activetab = window.location.hash;
-                    if (typeof(localStorage) !== 'undefined' ) {
-                        localStorage.setItem("activetab", activetab);
-                    }                
-                } 
-                
-                if (activetab !== '' && $(activetab).length ) {
-                    $(activetab).fadeIn();
-                } else {
-                    $('.group:first').fadeIn();
-                }
-                $('.group .collapsed').each(function(){
-                    $(this).find('input:checked').parent().parent().parent().nextAll().each(
-                    function(){
-                        if ($(this).hasClass('last')) {
-                            $(this).removeClass('hidden');
-                            return false;
-                        }
-                        $(this).filter('.hidden').removeClass('hidden');
-                    });
-                });
+			        // Switches option sections
+			        $('.group').hide();
+			        var activetab = '';
+			        if (typeof(localStorage) !== 'undefined' ) {
+				        activetab = localStorage.getItem("activetab");
+			        }
 
-                if (activetab !== '' && $(activetab + '-tab').length ) {
-                    $(activetab + '-tab').addClass('nav-tab-active');
-                }
-                else {
-                    $('.nav-tab-wrapper a:first').addClass('nav-tab-active');
-                }
-                $('.nav-tab-wrapper a').click(function(evt) {
-                    $('.nav-tab-wrapper a').removeClass('nav-tab-active');
-                    $(this).addClass('nav-tab-active').blur();
-                    var clicked_group = $(this).attr('href');
-                    if (typeof(localStorage) !== 'undefined' ) {
-                        localStorage.setItem("activetab", $(this).attr('href'));
-                    }
-                    $('.group').hide();
-                    $(clicked_group).fadeIn();
-                    evt.preventDefault();
-                });
+			        //if url has section id as hash then set it as active or override the current local storage value
+			        if(window.location.hash){
+				        activetab = window.location.hash;
+				        if (typeof(localStorage) !== 'undefined' ) {
+					        localStorage.setItem("activetab", activetab);
+				        }
+			        }
 
-                $('.wpsa-browse').on('click', function (event) {
-                    event.preventDefault();
+			        if (activetab !== '' && $(activetab).length ) {
+				        $(activetab).fadeIn();
+			        } else {
+				        $('.group:first').fadeIn();
+			        }
+			        $('.group .collapsed').each(function(){
+				        $(this).find('input:checked').parent().parent().parent().nextAll().each(
+					        function(){
+						        if ($(this).hasClass('last')) {
+							        $(this).removeClass('hidden');
+							        return false;
+						        }
+						        $(this).filter('.hidden').removeClass('hidden');
+					        });
+			        });
 
-                    var self = $(this);
+			        if (activetab !== '' && $(activetab + '-tab').length ) {
+				        $(activetab + '-tab').addClass('nav-tab-active');
+			        }
+			        else {
+				        $('.nav-tab-wrapper a:first').addClass('nav-tab-active');
+			        }
+			        $('.nav-tab-wrapper a').click(function(evt) {
+				        $('.nav-tab-wrapper a').removeClass('nav-tab-active');
+				        $(this).addClass('nav-tab-active').blur();
+				        var clicked_group = $(this).attr('href');
+				        if (typeof(localStorage) !== 'undefined' ) {
+					        localStorage.setItem("activetab", $(this).attr('href'));
+				        }
+				        $('.group').hide();
+				        $(clicked_group).fadeIn();
+				        evt.preventDefault();
+			        });
 
-                    // Create the media frame.
-                    var file_frame = wp.media.frames.file_frame = wp.media({
-                        title: self.data('uploader_title'),
-                        button: {
-                            text: self.data('uploader_button_text'),
-                        },
-                        multiple: false
-                    });
+			        $('.wpsa-browse').on('click', function (event) {
+				        event.preventDefault();
 
-                    file_frame.on('select', function () {
-                        var attachment = file_frame.state().get('selection').first().toJSON();
-                        self.prev('.wpsa-url').val(attachment.url).change();
-                    });
+				        var self = $(this);
 
-                    // Finally, open the modal
-                    file_frame.open();
-                });
-            })(jQuery);
+				        // Create the media frame.
+				        var file_frame = wp.media.frames.file_frame = wp.media({
+					        title: self.data('uploader_title'),
+					        button: {
+						        text: self.data('uploader_button_text')
+					        },
+					        multiple: false
+				        });
+
+				        file_frame.on('select', function () {
+					        var attachment = file_frame.state().get('selection').first().toJSON();
+					        self.prev('.wpsa-url').val(attachment.url).change();
+				        });
+
+				        // Finally, open the modal
+				        file_frame.open();
+			        });
+		        });
+
+	        })(jQuery);
         </script>
         <?php
         $this->_style_fix();
     }
 
-    function _style_fix() {
-        global $wp_version;
+	/**
+	 * Form rendering.
+	 */
+	public function _style_fix() {
+		global $wp_version;
 
-        if (version_compare($wp_version, '3.8', '<=')):
-        ?>
-        <style type="text/css">
-            /** WordPress 3.8 Fix **/
-            .form-table th { padding: 20px 10px; }
-            #wpbody-content .metabox-holder { padding-top: 5px; }
-        </style>
-        <?php
-        endif;
-    }
+		if ( version_compare( $wp_version, '3.8', '<=' ) ) :
+			?>
+			<style type="text/css">
+				/** WordPress 3.8 Fix **/
+				.form-table th {
+					padding: 20px 10px;
+				}
+
+				#wpbody-content .metabox-holder {
+					padding-top: 5px;
+				}
+			</style>
+			<?php
+		endif;
+	}
 
 }
 
