@@ -420,6 +420,11 @@ class WeDevs_Settings_API {
             'id'       => $args['section'] . '[' . $args['id'] . ']',
             'echo'     => 0
         );
+
+		if ( ! empty( $args['dropdown_args'] ) && is_array( $args['dropdown_args'] ) ) {
+			$dropdown_args = array_merge( $args['dropdown_args'], $dropdown_args );
+		}
+
         $html = wp_dropdown_pages( $dropdown_args );
         echo $html;
     }
