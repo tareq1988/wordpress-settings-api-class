@@ -144,6 +144,7 @@ class WeDevs_Settings_API {
                     'min'               => isset( $option['min'] ) ? $option['min'] : '',
                     'max'               => isset( $option['max'] ) ? $option['max'] : '',
                     'step'              => isset( $option['step'] ) ? $option['step'] : '',
+                    'post_type'         => isset( $option['post_type'] ) ? $option['post_type'] : 'page',
                 );
 
                 add_settings_field( "{$section}[{$name}]", $label, $callback, $section, $section, $args );
@@ -419,11 +420,16 @@ class WeDevs_Settings_API {
     function callback_pages( $args ) {
 
         $dropdown_args = array(
-            'selected' => esc_attr($this->get_option($args['id'], $args['section'], $args['std'] ) ),
-            'name'     => $args['section'] . '[' . $args['id'] . ']',
-            'id'       => $args['section'] . '[' . $args['id'] . ']',
-            'echo'     => 0
+            'selected'  => esc_attr($this->get_option($args['id'], $args['section'], $args['std'] ) ),
+            'name'      => $args['section'] . '[' . $args['id'] . ']',
+            'id'        => $args['section'] . '[' . $args['id'] . ']',
+            'echo'      => 0,
+            'post_type' => $args['post_type'],
+            'hierarchical' => true,
         );
+
+        // var_dump($dropdown_args);
+
         $html = wp_dropdown_pages( $dropdown_args );
         echo $html;
     }
