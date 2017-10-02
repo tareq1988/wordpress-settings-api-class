@@ -426,6 +426,7 @@ class WeDevs_Settings_API {
             'echo'      => 0,
             'post_type' => $args['post_type'],
             'hierarchical' => true,
+            'show_option_none' => '— Select —',
         );
 
         // var_dump($dropdown_args);
