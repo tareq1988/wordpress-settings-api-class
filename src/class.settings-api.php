@@ -428,10 +428,8 @@ class WeDevs_Settings_API {
             'hierarchical' => true,
             'show_option_none' => '— Select —',
         );
-
-        // var_dump($dropdown_args);
-
         $html = wp_dropdown_pages( $dropdown_args );
+        $html .= $this->get_field_description( $args );
         echo $html;
     }
 
