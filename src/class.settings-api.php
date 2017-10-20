@@ -69,8 +69,15 @@ class WeDevs_Settings_API {
      * @param array   $fields settings fields array
      */
     function set_fields( $fields ) {
+        foreach ( $fields as $section => $field ) {
+            foreach ( $field as $key => $option ) {
+                if ( $option['type'] == 'title' ) {
+                    $fields[ $section ][ $key ]['class'] = 'wedevs-title';
+                    $fields[ $section ][ $key ]['name'] = '';
+                }
+            }
+        }
         $this->settings_fields = $fields;
-
         return $this;
     }
 
@@ -165,6 +172,19 @@ class WeDevs_Settings_API {
         }
 
         return $desc;
+    }
+    
+    /**
+     * Displays a title field
+     *
+     * @version 1.0.0
+     * @since   1.0.0
+     *
+     * @param array $args settings field args
+     */
+    function callback_title( $args ) {
+        $html       = $this->get_field_description( $args );
+        echo $html;
     }
 
     /**
@@ -619,6 +639,18 @@ class WeDevs_Settings_API {
             /** WordPress 3.8 Fix **/
             .form-table th { padding: 20px 10px; }
             #wpbody-content .metabox-holder { padding-top: 5px; }
+            
+            /** For Title setting field **/
+            #wpbody-content .metabox-holder h2{ padding: 0 !important; }
+            .wedevs-title th {
+                color: #23282d;
+            }
+            .wedevs-title label{
+                font-size: 1.3em !important;
+            }
+            .wedevs-title * {
+                cursor: auto;
+            }
         </style>
         <?php
         endif;
