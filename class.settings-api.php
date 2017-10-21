@@ -106,8 +106,9 @@ class WeDevs_Settings_API {
     function admin_init() {
         //register settings sections
         foreach ( $this->settings_sections as $section ) {
-            if ( false == get_option( $section['id'] ) ) {
-                add_option( $section['id'] );
+            if ( false == get_option( $section['id'] ) ) {                
+                $section_default_value = $this->getDefaultValueBySection($section['id']);
+                add_option($section['id'], $section_default_value);                
             }
 
             if ( isset($section['desc']) && !empty($section['desc']) ) {
@@ -145,6 +146,22 @@ class WeDevs_Settings_API {
             register_setting( $section['id'], $section['id'], array( $this, 'sanitize_options' ) );
         }
     }
+    
+    /**
+     * Prepares default values by section
+     *
+	 * @param $section_id
+	 *
+	 * @return array
+	 */
+     function getDefaultValueBySection($section_id){
+         $default_values = array();
+         $fields = $this->settings_fields[$section_id];
+         foreach ($fields as $field){
+	         $default_values[$field['name']] =  $field['default'];
+         }
+         return $default_values;
+     }
 
     /**
      * Displays a text field for a settings field
