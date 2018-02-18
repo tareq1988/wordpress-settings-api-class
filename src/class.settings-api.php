@@ -298,6 +298,29 @@ class WeDevs_Settings_API {
 
         echo $html;
     }
+    
+    /**
+     * Displays a multi select dropdown for a settings field
+     *
+     * @param array   $args settings field args
+     */
+    function callback_multiselect( $args ) {
+
+        $value = $this->get_option( $args['id'], $args['section'], $args['std'] );
+        $value = is_array($value) ? (array)$value : array();
+        $size  = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
+        $html  = sprintf( '<select multiple="multiple" class="%1$s" name="%2$s[%3$s][]" id="%2$s[%3$s]">', $size, $args['section'], $args['id'] );
+
+        foreach ( $args['options'] as $key => $label ) {
+            $checked = in_array($key, $value) ? $key : '0';
+            $html   .= sprintf( '<option value="%s"%s>%s</option>', $key, selected( $checked, $key, false ), $label );
+        }
+
+        $html .= sprintf( '</select>' );
+        $html .= $this->get_field_description( $args );
+
+        echo $html;
+    }
 
     /**
      * Displays a textarea for a settings field
