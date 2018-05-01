@@ -129,7 +129,7 @@ class WeDevs_Settings_API {
                 $args = array(
                     'id'                => $name,
                     'class'             => isset( $option['class'] ) ? $option['class'] : $name,
-                    'label_for'         => "{$section}[{$name}]",
+                    'label_for'         => "wpuf-{$section}[{$name}]",
                     'desc'              => isset( $option['desc'] ) ? $option['desc'] : '',
                     'name'              => $label,
                     'section'           => $section,
