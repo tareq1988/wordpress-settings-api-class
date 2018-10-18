@@ -142,6 +142,8 @@ class WeDevs_Settings_API {
                     'min'               => isset( $option['min'] ) ? $option['min'] : '',
                     'max'               => isset( $option['max'] ) ? $option['max'] : '',
                     'step'              => isset( $option['step'] ) ? $option['step'] : '',
+                    'custom_class'      => isset( $option['custom_class'] ) ? $option['custom_class'] : '',
+                    'custom_parameter'  => isset( $option['custom_parameter'] ) ? $option['custom_parameter'] : '',
                 );
 
                 add_settings_field( "{$section}[{$name}]", $label, $callback, $section, $section, $args );
@@ -180,11 +182,20 @@ class WeDevs_Settings_API {
         $size        = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
         $type        = isset( $args['type'] ) ? $args['type'] : 'text';
         $placeholder = empty( $args['placeholder'] ) ? '' : ' placeholder="' . $args['placeholder'] . '"';
+        $custom_parameter = empty( $args['custom_parameter'] ) ? '' : $this->parameter_to_string( $args['custom_parameter']);
 
-        $html        = sprintf( '<input type="%1$s" class="%2$s-text" id="%3$s[%4$s]" name="%3$s[%4$s]" value="%5$s"%6$s/>', $type, $size, $args['section'], $args['id'], $value, $placeholder );
+        $html        = sprintf( '<input type="%1$s" class="%2$s-text %3$s" id="%4$s[%5$s]" name="%4$s[%5$s]" value="%6$s"%7$s %8$s/>', $type, $size, $args['custom_class'], $args['section'], $args['id'], $value, $placeholder, $custom_parameter );
         $html       .= $this->get_field_description( $args );
 
         echo $html;
+    }
+
+    function parameter_to_string( $parameters ) {    
+        $result = '';    
+        foreach ($parameters as $key => $value) {
+            $result .= "$key=\"$value\" ";
+        }
+        return $result;
     }
 
     /**
