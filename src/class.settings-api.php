@@ -369,7 +369,7 @@ class WeDevs_Settings_API {
         $id    = $args['section']  . '[' . $args['id'] . ']';
         $label = isset( $args['options']['button_label'] ) ? $args['options']['button_label'] : __( 'Choose File' );
 
-        $html  = sprintf( '<input type="text" class="%1$s-text wpsa-url" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
+        $html  = sprintf( '<input type="text" class="%1$s-text wpsa-url" id="%2$s" name="%2$s" value="%3$s"/>', $size, $id, $value );
         $html  .= '<input type="button" class="button wpsa-browse" value="' . $label . '" />';
         $html  .= $this->get_field_description( $args );
 
