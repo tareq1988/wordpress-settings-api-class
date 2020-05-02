@@ -127,7 +127,17 @@ class WeDevs_Settings_API_Test {
                     'type'    => 'file',
                     'default' => '',
                     'options' => array(
-                        'button_label' => 'Choose Image'
+                        'button_label' => __( 'Choose File' )
+                    )
+                ),
+                array(
+                    'name'    => 'image',
+                    'label'   => __( 'Image', 'wedevs' ),
+                    'desc'    => __( 'Image description', 'wedevs' ),
+                    'type'    => 'image',
+                    'default' => '',
+                    'options' => array(
+                        'button_label' => __( 'Choose Image' )
                     )
                 )
             ),

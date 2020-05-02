@@ -377,6 +377,30 @@ class WeDevs_Settings_API {
     }
 
     /**
+     * Displays an image upload field with a preview
+     *
+     * @param array   $args settings field args
+     */
+    function callback_image( $args ) {
+
+        $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
+        $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
+        $id = $args['section']  . '[' . $args['id'] . ']';
+        $label = isset( $args['options']['button_label'] ) ?
+                        $args['options']['button_label'] :
+                        __( 'Choose Image' );
+        $img = wp_get_attachment_image_src( $value );
+        $img_url = $img ? $img[0] : '';
+
+        $html  = sprintf( '<input type="hidden" class="%1$s-text wpsa-image-id" id="%2$s" name="%2$s" value="%3$s"/>', $size, $id, $value );
+        $html .= '<p class="wpsa-image-preview"><img src="' . $img_url . '" /></p>';
+        $html .= '<input type="button" class="button wpsa-image-browse" value="' . $label . '" />';
+        $html .= $this->get_field_description( $args );
+
+        echo $html;
+    }
+
+    /**
      * Displays a password field for a settings field
      *
      * @param array   $args settings field args
@@ -613,7 +637,6 @@ class WeDevs_Settings_API {
 
                 $('.wpsa-browse').on('click', function (event) {
                     event.preventDefault();
-
                     var self = $(this);
 
                     // Create the media frame.
@@ -623,15 +646,44 @@ class WeDevs_Settings_API {
                             text: self.data('uploader_button_text'),
                         },
                         multiple: false
-                    });
+                    })
 
-                    file_frame.on('select', function () {
+                    .on('select', function () {
                         attachment = file_frame.state().get('selection').first().toJSON();
                         self.prev('.wpsa-url').val(attachment.url).change();
-                    });
+                    })
 
                     // Finally, open the modal
-                    file_frame.open();
+                    .open();
+                });
+
+                $('.wpsa-image-browse').on('click', function (event) {
+                    event.preventDefault();
+                    var self = $(this);
+
+                    // Create the media frame.
+                    var file_frame = wp.media.frames.file_frame = wp.media({
+                        title: self.data('uploader_title'),
+                        button: {
+                            text: self.data('uploader_button_text'),
+                        },
+                        multiple: false,
+                        library: { type: 'image' }
+                    })
+
+                    .on('select', function () {
+                        attachment = file_frame.state().get('selection').first().toJSON();
+                        var url;
+                        if (attachment.sizes && attachment.sizes.thumbnail)
+                            url = attachment.sizes.thumbnail.url;
+                        else
+                            url = attachment.url;
+                        self.parent().children('.wpsa-image-id').val(attachment.id).change();
+                        self.parent().children('.wpsa-image-preview').children('img').attr('src', url);
+                    })
+
+                    // Finally, open the modal
+                    .open();
                 });
         });
         </script>
